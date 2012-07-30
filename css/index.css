@@ -1,0 +1,18 @@
+body {
+	background-color: lightgrey;
+}
+
+#container {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#container canvas {
+	cursor: none;
+}
+
+.stats {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
