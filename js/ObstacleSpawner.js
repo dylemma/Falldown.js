@@ -3,7 +3,7 @@ Falldown.ObstacleSpawner = {};
 Falldown.ObstacleSpawner.DefaultColors = [0xff0000, 0xff9900, 0xffff00, 0x009900, 0x00ff99, 0x0000ff];
 
 Falldown.ObstacleSpawner.SpritePool = function(scene) {
-	var map = THREE.ImageUtils.loadTexture("/img/block.png");
+	var map = THREE.ImageUtils.loadTexture("img/block.png");
 	
 	function makeNewSprite() {
 		var sprite = new THREE.Sprite( {map: map, useScreenCoordinates: true, color: 0xffffff} );
