@@ -12,6 +12,8 @@ var box,
 	particles,
 	obstacles,
 	player;
+
+var game;
 	
 function init(){
 	//init the renderer
@@ -34,7 +36,6 @@ function init(){
 	//init the scene
 	scene = new THREE.Scene();
 	scene.add(camera);
-//	demoInitScene(scene);
 	
 	//init the stats
 	stats = new Stats();
@@ -50,8 +51,10 @@ function init(){
 	//init the projector
 	projector = new THREE.Projector();
 	
-	player = new Falldown.Player(550, scene, renderer.domElement);
-	obstacles = new Falldown.ObstacleSystem(scene, player);
+	game = new Falldown.Game(scene, renderer);
+//	
+//	player = new Falldown.Player(550, scene, renderer.domElement);
+//	obstacles = new Falldown.ObstacleSystem(scene, player);
 	
 	renderer.render(scene, camera);
 }
@@ -67,7 +70,8 @@ function loop() {
 	requestAnimationFrame(loop, renderer.domElement);
 	stats.update();
 	
-	obstacles.update();
+//	obstacles.update();
+	game.update();
 	renderer.render(scene, camera);
 }
 
