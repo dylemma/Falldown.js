@@ -12,7 +12,7 @@ I'm still working out the game mechanics - deciding between two modes:
 
 You can run *Falldown.js* by dropping the contents into any old web server, and opening the [index.html][1] file. I've provided [server.js][2] to run with Node.js, which will statically serve all of the files on port 8888. I'm testing with Chrome, but it should also work in Firefox.
 
-If I happen to be testing at the time, you'll be able to find the game running [here][3].
+You can also find a working demo [here][3].
 
 ##Development Status##
 
@@ -21,4 +21,4 @@ I've got most of the basics down. Blocks fall from the sky and you can catch the
 
   [1]: https://github.com/dylemma/Falldown.js/blob/master/index.html
   [2]: https://github.com/dylemma/Falldown.js/blob/master/server.js
-  [3]: http://dylemma.io:8888
+  [3]: http://dylemma.github.com/Falldown.js/
