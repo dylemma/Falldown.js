@@ -1,7 +1,7 @@
 Falldown.Player = function(playerY, scene, domElement) {
 	var self = this;
 	var _sprite = (function(){
-		var map = THREE.ImageUtils.loadTexture("/img/player.png");
+		var map = THREE.ImageUtils.loadTexture("img/player.png");
 		
 		var sprite = new THREE.Sprite( {map: map, useScreenCoordinates: true, color: 0xffffff} );
 		sprite.position.y = playerY;

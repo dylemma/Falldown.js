@@ -12,7 +12,6 @@ Falldown.Game = function(scene, renderer) {
 		/*Initialize a spawner*/
 		var spawnBounds = new THREE.Rectangle();
 		spawnBounds.set(0, -40, 400, -40);
-		console.log(Falldown.ObstacleSpawner);
 		var spritePool = Falldown.ObstacleSpawner.SpritePool(scene);
 		var colors = Falldown.ObstacleSpawner.DefaultColors;
 		var spawner = new Falldown.ObstacleSpawner.DefaultSpawner(4, spritePool, colors, spawnBounds);

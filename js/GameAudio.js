@@ -13,7 +13,7 @@ Falldown.GameAudio = function() {
 	
 	var ready = false;
 	function onload(bufferList){
-		console.log("got sound buffers: ", bufferList);
+//		console.log("got sound buffers: ", bufferList);
 		if(bufferList[0]){
 			ready = true;
 			self.pop.buffer = bufferList[0];
@@ -48,7 +48,6 @@ Falldown.SoundHandler = function(context, defaultTarget, buffer){
 		
 		
 		var sound = this.readySound(target);
-		console.log(target, playbackRate, startTime, sound);
 		sound.playbackRate.value = playbackRate;
 		sound.noteOn(startTime);
 	}

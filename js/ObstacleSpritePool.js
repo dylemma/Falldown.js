@@ -4,7 +4,7 @@ Falldown.ObstacleSpriteHandle = function(ref, free) {
 }
 
 Falldown.ObstacleSpritePool = function(initialSize, scene) {
-	var map = THREE.ImageUtils.loadTexture("/img/block.png");
+	var map = THREE.ImageUtils.loadTexture("img/block.png");
 	
 	var pool = new Array(initialSize);
 	var avail = [];

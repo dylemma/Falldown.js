@@ -10,7 +10,6 @@ Falldown.DefaultObstacleReaper = function(sound) {
 			if(obs.state == Falldown.ObstacleState.CAUGHT){
 				var pitch = Math.random() * 1.5 + 0.5;
 				sound.play({pitch: pitch});
-				console.log("pretend I'm playing a happy 'caught' sound");
 			}
 			obs.dispose();
 		});
