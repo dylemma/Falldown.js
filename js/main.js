@@ -67,12 +67,19 @@ function demoInitScene(scene){
 }
 
 function loop() {
+	var startTime = Date.now();
 	requestAnimationFrame(loop, renderer.domElement);
 	stats.update();
 	
 //	obstacles.update();
 	game.update();
 	renderer.render(scene, camera);
+	var endTime = Date.now();
+	
+	var duration = endTime - startTime;
+	if(duration > 10){
+		console.warn("loop took a long time: " + duration + "ms");
+	}
 }
 
 init();

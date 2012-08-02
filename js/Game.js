@@ -31,6 +31,7 @@ Falldown.Game = function(scene, renderer) {
 	})();
 	
 	this.update = function(){
+		this.player.update();
 		this.obstacleSystem.update();
 	}
 }
