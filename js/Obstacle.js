@@ -1,4 +1,11 @@
+var obstacleCount = 0;
+
 Falldown.Obstacle = function(spritePool) {
+	var self = this;
+	obstacleCount ++;
+	this.id = obstacleCount;
+	console.log("spawned obstacle no. " + obstacleCount);
+	
 	Falldown.SpriteObject.call(this, spritePool);
 	
 	Falldown.GameObjectDynamics.call(this, {
@@ -7,24 +14,13 @@ Falldown.Obstacle = function(spritePool) {
 		,setRotation: function(r) { this.sprite.rotation = r; }
 	});
 	
-	this.state = Falldown.ObstacleState.FALLING;
+	Falldown.GameObject.call(this, {
+		init: function(){ 
+			self.state = Falldown.GameObjectState.ACTIVE;
+		}
+	});
 	
-//	var _sprite = spritePool.obtain();
-//	_sprite.visible = true;
-//	this.__defineGetter__("sprite", function(){ return _sprite; });
-//	
-//	/* Free the spriteHandle for use elsewhere */
-//	this.dispose = function(){
-//		if(_sprite) spritePool.free(_sprite);
-//		_sprite = undefined;
-//	}
-//	
-////	
-//	/** GET access to the position vector, which has methods for mutating itself */
-//	this.__defineGetter__("position", function(){ return this.sprite.position; });
-////	
-//	/** GET access to the color vector, which has methods for mutating itself */
-//	this.__defineGetter__("color", function(){ return this.sprite.color; });
+//	this.state = Falldown.ObstacleState.FALLING;
 }
 
 Falldown.ObstacleState = {
@@ -33,3 +29,19 @@ Falldown.ObstacleState = {
 	CAUGHT: 3
 }
 
+Falldown.ObstaclePool = function(spritePool) {
+	var self = this;
+	Falldown.ResourcePool.call(self, makeNewObstacle, deallocateObstacle);
+	
+	function makeNewObstacle() {
+		var obstacle = new Falldown.Obstacle(spritePool);
+		Falldown.GameObject.call(obstacle, {
+			dispose: function(){ self.free(obstacle); }
+		});
+		return obstacle;
+	}
+	
+	function deallocateObstacle(obstacle) {
+		// no-op, I guess.
+	}
+}

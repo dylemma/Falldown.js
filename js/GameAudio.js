@@ -8,8 +8,9 @@ Falldown.GameAudio = function() {
 		this.popGain.gain.value = 0.25;
 		this.popGain.connect(this.context.destination);
 	this.pop = new Falldown.SoundHandler(self.context, self.popGain);
+	this.powerup = new Falldown.SoundHandler(self.context, self.popGain);
 	
-	var loader = new BufferLoader(this.context, ['audio/pop.wav'], onload);
+	var loader = new BufferLoader(this.context, ['audio/pop.wav', 'audio/powerup.wav'], onload);
 	
 	var ready = false;
 	function onload(bufferList){
@@ -17,6 +18,9 @@ Falldown.GameAudio = function() {
 		if(bufferList[0]){
 			ready = true;
 			self.pop.buffer = bufferList[0];
+		}
+		if(bufferList[0]){
+			self.powerup.buffer = bufferList[1];
 		}
 	}
 	

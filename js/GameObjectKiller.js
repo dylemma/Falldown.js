@@ -28,32 +28,18 @@ Falldown.OrKiller = function(a, b){
 Falldown.OutOfBoundsKiller = function(bounds) {
 	Falldown.GameObjectKiller.call(this, kill);
 	
-	function kill(obstacle) {
-		var pos = obstacle.position;
+	function kill(obj) {
+		var pos = obj.position;
 		if(
 			pos.x < bounds.getLeft() ||
 			pos.x > bounds.getRight() || 
 			pos.y < bounds.getTop() ||
 			pos.y > bounds.getBottom()
 		){
-			// TODO: obstacle.state = Falldown.GameObjectState.OUT_OF_BOUNDS
+			obj.state = Falldown.GameObjectState.OUT_OF_BOUNDS
 			return true;
 		}
 		return false;
-	}
-}
-
-Falldown.ObstacleKiller = function(yMax) {
-	Falldown.GameObjectKiller.call(this, kill);
-	
-	function kill(obstacle) {
-		var p = obstacle.position;
-		if(p.y > yMax){
-			obstacle.state = Falldown.ObstacleState.DESTROYED;
-			return true;
-		} else {
-			return false;
-		}
 	}
 }
 
@@ -65,7 +51,7 @@ Falldown.CatchingKiller = function(positionVec) {
 	function kill(obstacle) {
 		var p = obstacle.position;
 		if(p.distanceToSquared(positionVec) < minDistSquared){
-			obstacle.state = Falldown.ObstacleState.CAUGHT;
+			obstacle.state = Falldown.GameObjectState.CAUGHT;
 			return true;
 		} else {
 			return false;

@@ -1,5 +1,5 @@
 Falldown.ResourcePool = function(createNew, deallocate, initialCount, blockSize) {
-	initialCount = initialCount || 100;
+	initialCount = initialCount || 30;
 	blockSize = blockSize || 10;
 	deallocate = deallocate || function(r){};
 	

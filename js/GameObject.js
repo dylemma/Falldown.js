@@ -10,15 +10,24 @@ Falldown.GameObject = function(options) {
 		this.dispose = this.dispose.andThen(options.dispose);
 }
 
+Falldown.GameObjectState = {
+	ACTIVE: 1,
+	OUT_OF_BOUNDS: 2,
+	CAUGHT: 3
+}
+
 Falldown.SpriteObject = function(spritePool) {
-	var _sprite = spritePool.obtain();
-	_sprite.visible = true;
-	this.__defineGetter__("sprite", function(){ return _sprite; });
+	var _sprite = undefined;
 	
+	this.__defineGetter__("sprite", function(){ return _sprite; });
 	this.__defineGetter__("position", function(){ return _sprite.position; });
 	this.__defineGetter__("color", function(){ return _sprite.color; });
 	
 	Falldown.GameObject.call(this, {
+		init: function(){
+			_sprite = spritePool.obtain();
+			_sprite.visible = true;
+		},
 		dispose: function(){ 
 			if(_sprite) spritePool.free(_sprite);
 			_sprite = undefined;
