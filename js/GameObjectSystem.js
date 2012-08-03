@@ -7,12 +7,13 @@ Falldown.GameObjectSystem = function(spawner, updater, killer, reaper){
 		this.gameObjects.push.apply(this.gameObjects, spawner.spawn());
 	}
 	
-	this.update = function(){
+	this.update = function(dTime){
 		this.spawnSprite();
 		var spritesCopy = [];
 		var deadObstacles = [];
 
-		updater.update(this.gameObjects);
+//		console.log("update: dTime = " + dTime);
+		updater.update(this.gameObjects, dTime);
 		this.gameObjects.forEach(function(obstacle, i){
 			(killer.kill(obstacle) ? deadObstacles : spritesCopy).push(obstacle);
 		});

@@ -25,6 +25,24 @@ Falldown.OrKiller = function(a, b){
 	}
 }
 
+Falldown.OutOfBoundsKiller = function(bounds) {
+	Falldown.GameObjectKiller.call(this, kill);
+	
+	function kill(obstacle) {
+		var pos = obstacle.position;
+		if(
+			pos.x < bounds.getLeft() ||
+			pos.x > bounds.getRight() || 
+			pos.y < bounds.getTop() ||
+			pos.y > bounds.getBottom()
+		){
+			// TODO: obstacle.state = Falldown.GameObjectState.OUT_OF_BOUNDS
+			return true;
+		}
+		return false;
+	}
+}
+
 Falldown.ObstacleKiller = function(yMax) {
 	Falldown.GameObjectKiller.call(this, kill);
 	

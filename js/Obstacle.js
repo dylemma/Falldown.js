@@ -1,6 +1,12 @@
 Falldown.Obstacle = function(spritePool) {
 	Falldown.SpriteObject.call(this, spritePool);
 	
+	Falldown.GameObjectDynamics.call(this, {
+		getPosition: function(){ return this.sprite.position; }
+		,getRotation: function(){ return this.sprite.rotation; }
+		,setRotation: function(r) { this.sprite.rotation = r; }
+	});
+	
 	this.state = Falldown.ObstacleState.FALLING;
 	
 //	var _sprite = spritePool.obtain();

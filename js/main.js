@@ -63,13 +63,18 @@ function demoInitScene(scene){
 	scene.add(box);
 }
 
+var lastUpdateTime = Date.now();
 function loop() {
 	var startTime = Date.now();
 	requestAnimationFrame(loop, renderer.domElement);
 	stats.update();
 	
-//	obstacles.update();
-	game.update();
+	var newUpdateTime = Date.now();
+	var timeDiff = newUpdateTime - lastUpdateTime;
+	lastUpdateTime = newUpdateTime;
+
+	game.update(timeDiff);
+	
 	renderer.render(scene, camera);
 	var endTime = Date.now();
 	

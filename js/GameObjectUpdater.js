@@ -2,11 +2,11 @@ Falldown.GameObjectUpdater = function(update) {
 	this.update = update;
 
 	this.andThen = function(next) {
-		return new Falldown.CompositeObstacleUpdater(this, next);
+		return new Falldown.CompositeUpdater(this, next);
 	}
 }
 
-Falldown.CompositeObstacleUpdater = function(first, second){
+Falldown.CompositeUpdater = function(first, second){
 	Falldown.GameObjectUpdater.call(this, update);
 	
 	function update(obstacles) {
@@ -15,17 +15,21 @@ Falldown.CompositeObstacleUpdater = function(first, second){
 	}
 }
 
-Falldown.ObstacleUpdater = function(){
+Falldown.DynamicsUpdater = function() {
 	Falldown.GameObjectUpdater.call(this, updateAll);
 	
-	function updateAll(obstacles) {
-		obstacles.forEach(updateObstacle);
+	var vector = new THREE.Vector3();
+	
+	function updateAll(objects, dTime) {
+		var rft = Falldown.relativeFrameTime(dTime);
+		objects.forEach(function(object){
+			updateObject(object, rft);
+		});
 	}
 	
-	function updateObstacle(obstacle, i) {
-		var sprite = obstacle.sprite;
-		sprite.position.z = i * 0.01;
-		sprite.position.y += obstacle.speed;
-		sprite.rotation += Math.PI * obstacle.rspeed * 0.01;
+	function updateObject(object, rft){
+		vector.copy(object.velocity).multiplyScalar(rft);
+		object.position.addSelf( object.velocity );
+		object.rotation = object.rotation + (object.angularVelocity * rft);
 	}
 }
