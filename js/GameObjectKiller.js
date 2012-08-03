@@ -1,8 +1,8 @@
-Falldown.ObstacleKiller = function(kill){
+Falldown.GameObjectKiller = function(kill){
 	this.kill = kill;
 	
 	this.or = function(that){
-		return new Falldown.ObstacleKiller(function(obstacle){
+		return new Falldown.GameObjectKiller(function(obstacle){
 			return this.kill(obstacle) || that.kill(obstacle);
 		});
 	}
@@ -12,21 +12,21 @@ Falldown.ObstacleKiller = function(kill){
 }
 
 Falldown.AndKiller = function(a, b){
-	Falldown.ObstacleKiller.call(this, kill);
+	Falldown.GameObjectKiller.call(this, kill);
 	function kill(obstacle) {
 		return a.kill(obstacle) && b.kill(obstacle);
 	}
 }
 
 Falldown.OrKiller = function(a, b){
-	Falldown.ObstacleKiller.call(this, kill);
+	Falldown.GameObjectKiller.call(this, kill);
 	function kill(obstacle) {
 		return a.kill(obstacle) || b.kill(obstacle);
 	}
 }
 
-Falldown.DefaultObstacleKiller = function(yMax) {
-	Falldown.ObstacleKiller.call(this, kill);
+Falldown.ObstacleKiller = function(yMax) {
+	Falldown.GameObjectKiller.call(this, kill);
 	
 	function kill(obstacle) {
 		var p = obstacle.position;
@@ -40,7 +40,7 @@ Falldown.DefaultObstacleKiller = function(yMax) {
 }
 
 Falldown.CatchingKiller = function(positionVec) {
-	Falldown.ObstacleKiller.call(this, kill);
+	Falldown.GameObjectKiller.call(this, kill);
 	
 	var minDistSquared = Math.pow(20, 2);
 	

@@ -52,9 +52,6 @@ function init(){
 	projector = new THREE.Projector();
 	
 	game = new Falldown.Game(scene, renderer);
-//	
-//	player = new Falldown.Player(550, scene, renderer.domElement);
-//	obstacles = new Falldown.ObstacleSystem(scene, player);
 	
 	renderer.render(scene, camera);
 }

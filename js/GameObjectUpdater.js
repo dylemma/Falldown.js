@@ -1,4 +1,4 @@
-Falldown.ObstacleUpdater = function(update) {
+Falldown.GameObjectUpdater = function(update) {
 	this.update = update;
 
 	this.andThen = function(next) {
@@ -6,8 +6,17 @@ Falldown.ObstacleUpdater = function(update) {
 	}
 }
 
-Falldown.DefaultObstacleUpdater = function(){
-	Falldown.ObstacleUpdater.call(this, updateAll);
+Falldown.CompositeObstacleUpdater = function(first, second){
+	Falldown.GameObjectUpdater.call(this, update);
+	
+	function update(obstacles) {
+		first.update(obstacles);
+		second.update(obstacles);
+	}
+}
+
+Falldown.ObstacleUpdater = function(){
+	Falldown.GameObjectUpdater.call(this, updateAll);
 	
 	function updateAll(obstacles) {
 		obstacles.forEach(updateObstacle);
@@ -18,14 +27,5 @@ Falldown.DefaultObstacleUpdater = function(){
 		sprite.position.z = i * 0.01;
 		sprite.position.y += obstacle.speed;
 		sprite.rotation += Math.PI * obstacle.rspeed * 0.01;
-	}
-}
-
-Falldown.CompositeObstacleUpdater = function(first, second){
-	Falldown.ObstacleUpdater.call(this, update);
-	
-	function update(obstacles) {
-		first.update(obstacles);
-		second.update(obstacles);
 	}
 }

@@ -1,9 +1,9 @@
-Falldown.ObstacleReaper = function(reap){
+Falldown.GameObjectReaper = function(reap){
 	this.reap = reap;
 }
 
-Falldown.DefaultObstacleReaper = function(sound) {
-	Falldown.ObstacleReaper.call(this, reap);
+Falldown.ObstacleReaper = function(sound) {
+	Falldown.GameObjectReaper.call(this, reap);
 	
 	function reap(obstacles){ 
 		obstacles.forEach(function(obs){
