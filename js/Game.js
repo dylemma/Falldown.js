@@ -36,6 +36,15 @@ Falldown.Game = function(scene, renderer) {
 			obj.sprite.scale.set(0.75, 0.75, 0.75);
 		}
 		
+		function setPoweupColorChange(obj) {
+			var color = obj.color.getHex();
+			obj.powerupColor = color;
+			
+			obj.onCatch = function(player){
+				player.color = obj.powerupColor;
+			}
+		}
+		
 		/*Initialize a spawner*/
 		var blockSpritePool = new Falldown.SpritePool("img/block.png", scene);
 		var colorchangeSpritePool = new Falldown.SpritePool("img/colorchange.png", scene);
@@ -45,7 +54,12 @@ Falldown.Game = function(scene, renderer) {
 //		var spawner = new Falldown.ObstacleSpawner(4, obstaclePool, colors, spawnBounds);
 		
 		var obstacleSpawner = new Falldown.PooledSpawner(4, obstaclePool, randomizePosition.andThen(randomizeColor).andThen(randomizeVelocity));
-		var powerupSpawner = new Falldown.PooledSpawner(100, powerupPool, randomizePosition.andThen(randomizeColor).andThen(setPowerupVelocity));
+		var powerupSpawner = new Falldown.PooledSpawner(100, powerupPool, 
+			randomizePosition
+				.andThen(randomizeColor)
+				.andThen(setPowerupVelocity)
+				.andThen(setPoweupColorChange)
+		);
 		
 		/*Initialize a killer. Part A is for things that fall off the bottom. Part B is for things that the player catches*/
 		var dynamicsBounds = new THREE.Rectangle();
@@ -61,7 +75,7 @@ Falldown.Game = function(scene, renderer) {
 		/*Initialize a reaper*/
 		var reaper = new Falldown.ObstacleReaper(game.audio.pop);
 		
-		var powerupReaper = new Falldown.PowerupReaper(game.audio.powerup);
+		var powerupReaper = new Falldown.PowerupReaper(game.audio.powerup, game.player);
 		
 		this.powerupSystem = new Falldown.GameObjectSystem(powerupSpawner, updater, killer, powerupReaper);
 		this.obstacleSystem = new Falldown.GameObjectSystem(obstacleSpawner, updater, killer, reaper);

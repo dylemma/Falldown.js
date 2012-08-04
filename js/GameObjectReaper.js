@@ -16,13 +16,15 @@ Falldown.ObstacleReaper = function(sound) {
 	}
 }
 
-Falldown.PowerupReaper = function(sound) {
+Falldown.PowerupReaper = function(sound, player) {
 	Falldown.GameObjectReaper.call(this, reap);
 	
 	function reap(powerups){ 
 		powerups.forEach(function(obj){
 			if(obj.state == Falldown.ObstacleState.CAUGHT){
-				var pitch = Math.random() * 1.5 + 0.5;
+				if(obj.onCatch){
+					obj.onCatch(player);
+				}
 				sound.play();
 			}
 			obj.dispose();
