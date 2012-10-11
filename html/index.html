@@ -1,0 +1,70 @@
+<html>
+
+<head>
+	<script src="js/3rdparty/jquery.js"></script>
+	<script src="js/3rdparty/Three.js"></script>
+	<script src="js/3rdparty/Stats.js"></script>
+	
+	<script src="js/Utils.js"></script>
+	<script src="js/Falldown.js"></script>
+	<script src="js/ResourcePool.js"></script>
+	<script src="js/Obstacle.js"></script>
+	<script src="js/Powerup.js"></script>
+	<script src="js/GameObject.js"></script>
+	<script src="js/GameObjectSpawner.js"></script>
+	<script src="js/GameObjectUpdater.js"></script>
+	<script src="js/GameObjectKiller.js"></script>
+	<script src="js/GameObjectReaper.js"></script>
+	<script src="js/Player.js"></script>
+	<script src="js/SpritePool.js"></script>
+	
+	<script src="js/GameObjectSystem.js"></script>
+	
+	<script src="js/BufferLoader.js"></script>
+	<script src="js/GameAudio.js"></script>
+	<script src="js/Game.js"></script>
+	<link rel="stylesheet" href="css/index.css" />
+</head>
+
+<body>
+	<div id="stats"></div>
+	<div id="container"></div>
+	
+	<script type="x-shader/x-vertex" id="vertexshader">
+attribute float size;
+attribute vec3 ca;
+
+varying vec3 vColor;
+
+void main() {
+
+	vColor = ca;
+
+	vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+
+	//gl_PointSize = size;
+	gl_PointSize = size * ( 300.0 / length( mvPosition.xyz ) );
+
+	gl_Position = projectionMatrix * mvPosition;
+
+}
+	</script>
+	
+	<script type="x-shader/x-fragment" id="fragmentshader">
+uniform vec3 color;
+uniform sampler2D texture;
+
+varying vec3 vColor;
+
+void main() {
+
+	gl_FragColor = vec4( color * vColor, 1.0 );
+	gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );
+
+}
+		</script>
+	
+	<script src="js/main.js"></script>
+</body>
+
+</html>
