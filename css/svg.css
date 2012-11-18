@@ -1,0 +1,50 @@
+svg {
+	border: 1px solid grey;
+	padding: 1em;
+}
+
+svg.night {
+	background-color: black;
+}
+
+svg rect.obstacle {
+	fill: white;
+	stroke: black;
+	stroke-width: 2px;
+}
+
+svg rect.obstacle[color=red] { fill: red; }
+svg rect.obstacle[color=orange] { fill: orange; }
+svg rect.obstacle[color=yellow] { fill: yellow; }
+svg rect.obstacle[color=green] { fill: green; }
+svg rect.obstacle[color=blue] { fill: blue; }
+svg rect.obstacle[color=purple] { fill: purple; }
+svg rect.obstacle[color=rainbow] { -webkit-animation: rainbow-fill 2s infinite linear;
+}
+/* Rainbow color */
+@-webkit-keyframes rainbow-fill {
+	0% { fill: hsl(0, 100%, 60%); }
+	25% { fill: hsl(90, 100%, 60%); }
+	50% { fill: hsl(180, 100%, 60%); }
+	75% { fill: hsl(270, 100%, 60%); }
+	100% { fill: hsl(0, 100%, 60%); }
+}
+
+svg.night rect.obstacle { 
+	fill: none; 
+}
+svg.night rect.obstacle[color=red]{ stroke: red; }
+svg.night rect.obstacle[color=orange] { stroke: orange; }
+svg.night rect.obstacle[color=yellow]{ stroke: yellow; }
+svg.night rect.obstacle[color=green] { stroke: green; }
+svg.night rect.obstacle[color=blue]{ stroke: blue; }
+svg.night rect.obstacle[color=purple] { stroke: purple; }
+svg.night rect.obstacle[color=rainbow] { -webkit-animation: rainbow-stroke 2s infinite linear; }
+
+@-webkit-keyframes rainbow-stroke {
+	0% { stroke: hsl(0, 100%, 60%); }
+	25% { stroke: hsl(90, 100%, 60%); }
+	50% { stroke: hsl(180, 100%, 60%); }
+	75% { stroke: hsl(270, 100%, 60%); }
+	100% { stroke: hsl(0, 100%, 60%); }
+}

@@ -1,0 +1,8 @@
+svg {
+	cursor: none;
+	border: 1px solid black;
+}
+
+svg line {
+	cursor: none;
+}
