@@ -7,29 +7,32 @@ $(document).ready(function(){
 	
 	var player = world.player = new falldown.Player({
 		x: 50,
-		y: 90
+		y: 70
 	})
 	
 	var factory = falldown.Block.factory()
 	window.spawner = falldown.spawner(factory).when(falldown.spawner.interval(5))
 	
 	world.particleSystems = []
-	window.psys = world.particleSystems[0] = new falldown.ParticleSystem(500) 
+	window.psys = world.particleSystems[0] = new falldown.particle.ParticleSystem({numParticles: 200}) 
 	
-	psys.addBehavior(falldown.particleWave(
+	
+	psys.addBehavior(falldown.particle.wave(
 		new geom.Vector(50, -10), //start
 		new geom.Vector(50, 110), //end
 		100, //width
-		90, //duration
-		100 //numParticles
+		180, //duration
+		100, //numParticles
+		{
+			amplitude: 5,
+			color: function(){ return Random.pick(falldown.Block.colorPalette) }
+		}
 	))
 	
-	psys.addBehavior(falldown.particleWave(
-		new geom.Vector(50, 110), //end
-		new geom.Vector(50, -10), //start
-		100,
-		90,
-		100
+	psys.addBehavior(falldown.particle.emitter(
+		player.position,
+		new geom.Vector(0, 1),
+		30
 	))
 	
 	function loop(){

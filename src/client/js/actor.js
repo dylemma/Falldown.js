@@ -1,7 +1,6 @@
 (function(falldown){
 
-	var nextId = 0,
-		blockColors = ['limegreen', 'deepskyblue', 'sandybrown', 'darkorchid', 'crimson']
+	var nextId = 0
 	
 	var Actor = falldown.Actor = function(opts){
 		opts = opts || {}
@@ -17,8 +16,10 @@
 		
 		this.velocity = (opts.velocity instanceof geom.Vector) ? opts.velocity : new geom.Vector(0, 1)
 		this.rSpeed = (!isNaN(opts.rSpeed)) ? opts.rSpeed : 0
-		this.color = opts.color || Random.pick(blockColors)
+		this.color = opts.color || Random.pick(Block.colorPalette)
 	}
+	
+	Block.colorPalette = ['limegreen', 'deepskyblue', 'sandybrown', 'darkorchid', 'crimson']
 	
 	Block.factory = function(initialOpts){
 		var opts = initialOpts || {}

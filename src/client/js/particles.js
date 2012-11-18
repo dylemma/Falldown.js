@@ -54,15 +54,28 @@
 		psys.behaviors = {}
 	}
 	
-	ParticleSystem.prototype.addBehavior = function(behavior){
+	ParticleSystem.prototype.__defineGetter__('numFreeParticles', function(){
+		return this.particleAllocation['free'].length * this.bucketSize
+	})
+	
+	/* Check if the `behavior` will fit in this particleSystem based on its
+	 * requested number of particles.
+	 */
+	ParticleSystem.prototype.canAddBehavior = function(behavior){
 		var numBuckets = Math.ceil(behavior.numParticles / this.bucketSize),
 			freeBuckets = this.particleAllocation['free']
-		if(freeBuckets.length < numBuckets){
+		return freeBuckets.length >= numBuckets
+	}
+	
+	ParticleSystem.prototype.addBehavior = function(behavior){
+		if(!this.canAddBehavior(behavior))
 			throw 'Not enough particles in the system to support the behavior'
-		}
-		
-		var bid = behavior.id
-		var buckets = this.particleAllocation[bid] = []
+	
+		var numBuckets = Math.ceil(behavior.numParticles / this.bucketSize),
+			freeBuckets = this.particleAllocation['free'],
+			bid = behavior.id,
+			buckets = this.particleAllocation[bid] = []
+			
 		for(var i=0; i<numBuckets; i++){
 			buckets.push(freeBuckets.shift())
 		}
@@ -100,29 +113,15 @@
 	}
 	
 	ParticleSystem.prototype.step = function(){
-		if(this.expired) return
 		
-		//TODO: need some better logic for handling offsets etc
-		// a possible error with the current implementation:
-		// two behaviors are active; the first one expires;
-		// the next iteration, the second behavior gets the
-		// first chunk of particles, even though its state was
-		// active on the later chunks. There needs to be a way
-		// to permanently associate a behavior with a set of 
-		// chunks until it is removed.
-		
-		var offset = 0
 		for(var bid in this.behaviors){
 			var behavior = this.behaviors[bid]
 			
 			var numSpawned = 0,
 				toSpawn = behavior.spawnCount(),
-				age = behavior.age++,
-				offsetUpper = offset + behavior.numParticles
+				age = behavior.age++
 			
 			iterateParticles(this, behavior, function(p){
-			//for(var j=offset; j<offsetUpper; j++){
-				//var p = this.particles[j]
 				if(numSpawned < toSpawn && !p.active){
 					p.active = true
 					behavior.initParticle(p)
@@ -133,14 +132,12 @@
 				}
 			})
 			
-			if(age > behavior.duration){
+			if(age > behavior.duration && behavior.duration >=0){
 				//behavior finished
-				//this.behaviors[i] = undefined
 				removeBehavior(this, bid)
 			}
 		}
-		
-		//this.behaviors.flattenInPlace()
+
 	}
 	
 	var behaviorId = 0
@@ -193,17 +190,24 @@
 		}
 	}
 	
-	var particleWave = falldown.particleWave = function(startPos, endPos, width, duration, numParticles){
+	var particleWave = function(startPos, endPos, width, duration, numParticles, opts){
+		opts = opts || {}
+		
 		var pickPos = waveFrontPosition(startPos, endPos, width),
-			period = 30,
-			pickSize = trigUpDown(3),
-			psys = new ParticleSystem(undefined, numParticles)
+			period = opts.period || 30,
+			amplitude = opts.amplitude || 3,
+			pickSize = trigUpDown(amplitude),
+			pickColor = (function(){
+				if(typeof opts.color == 'function') return opts.color
+				else if(typeof opts.color == 'string') return function(){ return opts.color }
+				else return function(){ return 'black' }
+			})()
 		
 		function initParticle(p){
-			p.active = true //should this be assumed?
 			pickPos(this.age / duration, p.position)
 			p.size = pickSize(0)
 			p.metadata.timeAlive = 0
+			p.color = pickColor()
 		}
 		
 		function updateParticle(p){
@@ -225,27 +229,76 @@
 		behavior.killParticle = killParticle
 		behavior.spawnCount = spawnCount
 		
+		return behavior
+	}
+	
+	var particleEmitter = function(emitFrom, direction, particleLife){
+		var emitPos = (function(){
+			if(typeof emitFrom == 'function') return emitFrom
+			else return function(){ return emitFrom }
+		})()
 		
-		/*psys.step = function(){
-			if(this.expired) return
+		var emitDirection = (function(){
+			//var dir = new geom.Vector().set(direction).normalize()
+			//var normal = new geom.Vector(dir.y, -dir.x)
+			var scrap = new geom.Vector()
+			var spread = 0.2
 			
-			var numSpawned = 0,
-				toSpawn = spawnCount(),
-				t = this.age++
-			this.particles.forEach(function(p){
-				if(numSpawned < toSpawn && !p.active){
-					initParticle(p)
-					numSpawned++
-				} else if(p.active){
-					updateParticle(p)
-					if(killParticle(p)) p.reset()
-				}
-			})
-			if(t >= duration + period)
-				this.expired = true
-		}*/
+			return function(v){
+				scrap.set(direction).normalize()
+				v.set(scrap)
+				scrap.set(scrap.y, -scrap.x).scaleSelf(Random.next(-spread, spread))
+				v.addSelf(scrap)
+				return v
+			}
+		})()
+		
+		var pickSize = (function(){
+			var e = d3.ease('linear')
+			return function(t){ return 1 - e(t) }
+		})()
+		
+		var pickColor = function(){
+			return Random.pick(['red', 'orange'])
+		}
+		
+		function initParticle(p){
+			p.color = pickColor()
+			p.position.set(emitPos())
+			p.metadata.direction = emitDirection(new geom.Vector())
+			p.metadata.timeAlive = 0
+			p.size = pickSize(0)
+		}
+		
+		function updateParticle(p){
+			var t = (p.metadata.timeAlive++) / particleLife
+			p.size = pickSize(t)
+			p.position.addSelf(p.metadata.direction)
+		}
+		
+		function killParticle(p){
+			return p.metadata.timeAlive > particleLife
+		}
+		
+		function spawnCount(){ return 1 }
+		
+		var numParticles = (particleLife * 1) + 1
+		
+		var behavior = new ParticleSystemBehavior(numParticles, -1)
+		behavior.initParticle = initParticle
+		behavior.updateParticle = updateParticle
+		behavior.killParticle = killParticle
+		behavior.spawnCount = spawnCount
 		
 		return behavior
+	}
+	
+	falldown.particle = {
+		'Particle': Particle,
+		'ParticleSystem': ParticleSystem,
+		'ParticleSystemBehavior': ParticleSystemBehavior,
+		'wave': particleWave,
+		'emitter': particleEmitter
 	}
 
 })(window.falldown || (window.falldown = {}))
