@@ -1,7 +1,14 @@
 $(document).ready(function(){
 
 	var world = window.world = new falldown.World('svg')
-	var renderer = window.renderer = new falldown.Renderer()
+	var renderer = window.renderer = new falldown.Renderer([
+		'frontParticles',
+		'blocks',
+		'midParticles',
+		'player',
+		'backParticles',
+		'cursors'
+	].reverse())
 	var system = window.system = new falldown.System(world)
 	var controller = new falldown.Controller(world)
 	
@@ -10,14 +17,27 @@ $(document).ready(function(){
 		y: 70
 	})
 	
+	renderer.plugins.push(falldown.render.player(6, 10))
+	
 	var factory = falldown.Block.factory()
 	window.spawner = falldown.spawner(factory).when(falldown.spawner.interval(5))
 	
-	world.particleSystems = []
-	window.psys = world.particleSystems[0] = new falldown.particle.ParticleSystem({numParticles: 200}) 
+	world.particleSystems = {
+		'back': new falldown.particle.ParticleSystem({ numParticles: 100 }),
+		'mid': new falldown.particle.ParticleSystem({ numParticles: 200 }),
+		'front': new falldown.particle.ParticleSystem({ numParticles: 50 })
+	}
 	
+	new Array('back', 'mid', 'front').forEach(function(s){
+		var key = s
+		var plugin = falldown.render.particles(
+			s + 'Particles',
+			function(world){ return world.particleSystems[key] }
+		)
+		renderer.plugins.push(plugin)
+	})
 	
-	psys.addBehavior(falldown.particle.wave(
+	world.particleSystems['mid'].addBehavior(falldown.particle.wave(
 		new geom.Vector(50, -10), //start
 		new geom.Vector(50, 110), //end
 		100, //width
@@ -29,7 +49,7 @@ $(document).ready(function(){
 		}
 	))
 	
-	psys.addBehavior(falldown.particle.emitter(
+	world.particleSystems['back'].addBehavior(falldown.particle.emitter(
 		player.position,
 		new geom.Vector(0, 1),
 		30

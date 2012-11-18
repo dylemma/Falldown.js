@@ -34,9 +34,6 @@
 		this.bucketSize = +opts.bucketSize || 10
 		
 		setupParticles(this, +opts.numParticles || 500, this.bucketSize)
-		
-		
-		this.age = 0 //useless?
 	}
 	
 	function setupParticles(psys, numParticles, bucketSize){
@@ -255,6 +252,11 @@
 		
 		var pickSize = (function(){
 			var e = d3.ease('linear')
+			return function(t){ return (1 + e(t)) * 0.5 }
+		})()
+		
+		var pickOpacity = (function(){
+			var e = d3.ease('linear')
 			return function(t){ return 1 - e(t) }
 		})()
 		
@@ -268,11 +270,13 @@
 			p.metadata.direction = emitDirection(new geom.Vector())
 			p.metadata.timeAlive = 0
 			p.size = pickSize(0)
+			p.opacity = pickOpacity(0)
 		}
 		
 		function updateParticle(p){
 			var t = (p.metadata.timeAlive++) / particleLife
 			p.size = pickSize(t)
+			p.opacity = pickOpacity(t)
 			p.position.addSelf(p.metadata.direction)
 		}
 		

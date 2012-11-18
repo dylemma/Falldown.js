@@ -87,10 +87,8 @@
 	
 	var stepParticles = function(system){
 		var ps = system.world.particleSystems
-		if(ps && ps.forEach){
-			ps.forEach(function(s){
-				s.step()
-			})
+		for(key in ps){
+			ps[key].step()
 		}
 	}
 

@@ -2,24 +2,40 @@
 
 	var scrapVec = new geom.Vector()
 
-	var Renderer = falldown.Renderer = function(){}
+	var Renderer = falldown.Renderer = function(layers){
+		this.layers = layers
+		this.plugins = []
+	}
 
 	Renderer.prototype.render = function(world){
 		world = world || {}
+		
+		var svgLayers = world.svg.selectAll('g.layer').data(this.layers)
+		svgLayers.enter().append('svg:g')
+			.attr('class', 'layer')
+			.attr('id', function(d){ return d })
 		
 		renderCursor(this, world)
 		
 		if(world.blocks && world.blocks.length)
 			renderBlocks(this, world)
-			
-		if(world.player)
-			renderPlayer(this, world)
-			
-		if(world.particleSystems && world.particleSystems.forEach){
-			world.particleSystems.forEach(function(psys){
-				renderParticleSystem(this, world, psys)
-			})
-		}
+		
+		var self = this
+		this.plugins.forEach(function(plugin){
+			var layer = self.getLayer(world, plugin.layer),
+				data = plugin.getData(world)
+			plugin.render(layer, world, data)
+		})
+	}
+	
+	Renderer.prototype.getLayer = function(world, layerId){
+		return world.svg.selectAll('g.layer#' + layerId)
+	}
+	
+	var RendererPlugin = falldown.RendererPlugin = function(layer, getData, render){
+		this.layer = layer
+		this.getData = getData || function(world){ return undefined }
+		this.render = render || function(svgLayer, world, data){}
 	}
 	
 	var blockRadius = 8
@@ -94,31 +110,7 @@
 			.attr('x1', yScale(world.bounds.minX))
 			.attr('x2', yScale(world.bounds.maxX))
 	}
-	
-	function playerShapePath(rx, ry){
-		return 'M' + [0, -ry].join(',') +
-			'L' + [rx, ry].join(',') +
-			'Q' + [0, ry*0.4, -rx, ry].join(',') +
-			'L' + [0, -ry]
-	}
-	
-	var renderPlayer = function(renderer, world){
-		var g = world.svg.selectAll('g.player').data([world.player])
-		
-		g.enter().append('g').attr('class', 'player').append('svg:path')
-			.attr('d', playerShapePath(6, 10))
-			.style('stroke', 'black')
-			.style('stroke-width', 1)
-		
-		g
-			.attr('fill', function(d){ return d.color })
-			.attr('transform', function(d){
-				var t = 'translate(' + world.xScale(d.position.x) + ',' + world.yScale(d.position.y) + ')'
-				var r = 'rotate(' + d.angle + ')'
-				return t + r
-			})
-	}
-	
+
 	var renderParticleSystem = function(renderer, world, psys){
 		var xScale = world.xScale,
 			yScale = world.yScale
