@@ -1,4 +1,4 @@
-(function(falldown){
+withNamespace('falldown', function(falldown){
 
 	var nextId = 0
 	
@@ -54,8 +54,21 @@
 			opts.x || 0,
 			opts.y || 0
 		)
-		this.color = opts.color || 'white'
+		
+		this.emitter = falldown.particle.emitter(this.position, new geom.Vector(0, 1), 30)
+		
+		var _color = opts.color || 'white'
+		this.color = function(c){
+			if(arguments.length){
+				_color = c
+				//side effect: update the emitter's color
+				this.emitter.changeColor(c)
+				return this
+			} else {
+				return _color
+			}
+		}
 		this.angle = opts.angle || 0
 	}
 
-})(window.falldown || (window.falldown = {}))
+})

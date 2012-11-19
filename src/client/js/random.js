@@ -1,4 +1,4 @@
-(function(Random){
+withNamespace('Random', function(Random){
 	var rand = Math.random,
 		floor = Math.floor
 	
@@ -21,4 +21,4 @@
 	}
 
 
-})(window.Random || (window.Random = {}))
+})

@@ -1,4 +1,4 @@
-(function(sound){
+withNamespace('falldown.sound', function(sound){
 
 	sound.Context = function(){
 		var self = this
@@ -49,4 +49,4 @@
 		}
 	}
 	
-})(window.sound || (window.sound = {}))
+})

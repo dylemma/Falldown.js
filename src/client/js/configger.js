@@ -1,4 +1,4 @@
-(function(configger){
+withNamespace('configger', function(configger){
 
 	//TODO: evaluate how useful this really is - does it merit reuse in its own place?
 	configger.configFunc = function(opts, field){
@@ -12,4 +12,4 @@
 		}
 	}
 
-})(window.configger || (window.configger = {}))
+})

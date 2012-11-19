@@ -1,5 +1,4 @@
-(function(falldown){
-	var render = falldown.render || (falldown.render = {})
+withNamespace('falldown.render', function(render){
 
 	function playerShapePath(rx, ry){
 		return 'M' + [0, -ry].join(',') +
@@ -21,7 +20,7 @@
 				.style('stroke-width', 1)
 			
 			g
-				.attr('fill', function(d){ return d.color })
+				.attr('fill', 'white')//function(d){ return d.color })
 				.attr('transform', function(d){
 					var coords = world.xScale(d.position.x) + ',' + world.yScale(d.position.y),
 						t = 'translate(' + coords + ')',
@@ -35,6 +34,4 @@
 		return new falldown.RendererPlugin('player', getData, renderPlayer)
 	}
 	
-	
-
-})(window.falldown || (window.falldown = {}))
+}) // end 'falldown.render' namespace

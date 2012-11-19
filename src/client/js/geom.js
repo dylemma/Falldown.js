@@ -1,4 +1,4 @@
-(function(geom){
+withNamespace('geom', function(geom){
 
 	var Vec2 = geom.Vector = function(x, y){
 		this.x = x || 0
@@ -123,4 +123,4 @@
 		return this
 	}
 
-})(window.geom || (window.geom = {}))
+})

@@ -49,11 +49,13 @@ $(document).ready(function(){
 		}
 	))
 	
-	world.particleSystems['back'].addBehavior(falldown.particle.emitter(
+	var emitter = window.emitter = falldown.particle.emitter(
 		player.position,
 		new geom.Vector(0, 1),
 		30
-	))
+	)
+	
+	world.particleSystems['back'].addBehavior(player.emitter)
 	
 	renderer.plugins.push(falldown.render.blocks(8))
 	renderer.plugins.push(falldown.render.cursor())

@@ -1,4 +1,4 @@
-(function(falldown){
+withNamespace('falldown', function(falldown){
 
 	var scrapVec = new geom.Vector()
 
@@ -33,4 +33,4 @@
 		this.render = render || function(svgLayer, world, data){}
 	}
 
-})(window.falldown || (window.falldown = {}))
+})

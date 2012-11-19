@@ -1,4 +1,4 @@
-(function(falldown){
+withNamespace('falldown', function(falldown){
 
 	var Spawner = function(factory){
 		this.factory = factory
@@ -82,4 +82,4 @@
 		}
 	}
 
-})(window.falldown || (window.falldown = {}))
+})

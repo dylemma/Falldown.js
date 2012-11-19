@@ -1,4 +1,4 @@
-(function(falldown){
+withNamespace('falldown', function(falldown){
 
 	var scrap = new geom.Vector()
 
@@ -92,4 +92,4 @@
 		}
 	}
 
-})(window.falldown || (window.falldown = {}))
+})

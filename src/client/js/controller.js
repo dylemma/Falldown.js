@@ -1,4 +1,4 @@
-(function(falldown){
+withNamespace('falldown', function(falldown){
 
 	var Controller = falldown.Controller = function(world){
 		this.world = world
@@ -12,4 +12,4 @@
 		})
 	}
 	
-})(window.falldown || (window.falldown = {}))
+})

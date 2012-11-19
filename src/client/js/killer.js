@@ -1,4 +1,4 @@
-(function(falldown){
+withNamespace('falldown', function(falldown){
 	var killerId = 0
 
 	var Killer = function(){
@@ -87,4 +87,4 @@
 		}
 	}
 
-})(window.falldown || (window.falldown = {}))
+})

@@ -1,5 +1,4 @@
-(function(falldown){
-	var render = falldown.render || (falldown.render = {})
+withNamespace('falldown.render', function(render){
 	
 	render.particles = function(layer, getParticles){
 	
@@ -25,4 +24,4 @@
 		return new falldown.RendererPlugin(layer, getParticles, renderParticleSystem)
 	}
 
-})(window.falldown || (window.falldown = {}))
+}) // end 'falldown.render' namespace

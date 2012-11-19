@@ -1,4 +1,4 @@
-(function(falldown){
+withNamespace('falldown', function(falldown){
 	
 	var World = falldown.World = function(svg){
 		//size-related attributes
@@ -35,4 +35,4 @@
 			.range([this.screenBounds.minY, this.screenBounds.maxY])
 	}
 
-})(window.falldown || (window.falldown = {}))
+})

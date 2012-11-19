@@ -1,5 +1,4 @@
-(function(falldown){
-	var render = falldown.render || (falldown.render = {})
+withNamespace('falldown.render', function(render){
 	
 	var renderCursor = function(svgLayer, world){
 		var worldPos = {
@@ -44,5 +43,5 @@
 	render.cursor = function(){
 		return new falldown.RendererPlugin('cursors', undefined, renderCursor)
 	}
-
-})(window.falldown || (window.falldown = {}))
+	
+}) //end 'falldown.render' namespace

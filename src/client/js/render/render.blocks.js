@@ -1,5 +1,4 @@
-(function(falldown){
-	var render = falldown.render || (falldown.render = {})
+withNamespace('falldown.render', function(render){
 	
 	render.blocks = function(blockSize){
 		var blockSize = blockSize || 8
@@ -35,5 +34,4 @@
 		
 		return new falldown.RendererPlugin('blocks', getBlocks, renderBlocks)
 	}
-
-})(window.falldown || (window.falldown = {}))
+})
