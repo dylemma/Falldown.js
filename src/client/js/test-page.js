@@ -55,6 +55,9 @@ $(document).ready(function(){
 		30
 	))
 	
+	renderer.plugins.push(falldown.render.blocks(8))
+	renderer.plugins.push(falldown.render.cursor())
+	
 	function loop(){
 		webkitRequestAnimationFrame(loop)
 		system.step()
