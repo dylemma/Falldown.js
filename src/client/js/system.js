@@ -29,10 +29,12 @@ withNamespace('falldown', function(falldown){
 	])
 	
 	System.prototype.step = function(){
+		var world = this.world
+		
 		stepPlayer(this)
 		stepParticles(this)
 	
-		var blocks = this.world.blocks
+		var blocks = world.blocks
 		
 		intervalSpawn(this, blocks)
 		
@@ -48,6 +50,22 @@ withNamespace('falldown', function(falldown){
 			}
 			blocks.flattenInPlace()
 		}
+		
+		//TODO: this functionality should be inside an actual reaper instance
+		reapedBlocks.forEach(function(reaped){
+			if(reaped.reason === 'hitPlayer'){
+				var block = reaped.block,
+					burst = falldown.particle.burst(block.position, block.color, {
+						velocity: block.velocity
+					}),
+					psys = world.particleSystems['front']
+					
+				if(psys.canAddBehavior(burst)){
+					world.particleSystems['front'].addBehavior(burst)
+				}
+			}
+		})
+		
 		
 	}
 	

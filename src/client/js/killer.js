@@ -81,7 +81,7 @@ withNamespace('falldown', function(falldown){
 			var deaths = {}
 			killers.forEach(function(kill){
 				var d = kill(subjects, system)
-				for(i in d) deaths[i] = d
+				for(i in d) deaths[i] = d[i]
 			})
 			return deaths
 		}
