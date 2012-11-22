@@ -38,14 +38,14 @@ withNamespace('falldown.particle', function(particle){
 		})()
 		
 		var emitDirection = (function(){
-			var scrap = new geom.Vector()
+			var scrap = geom.Vector.scrap
 			var spread = 0.2
 			
 			return function(v){
 				scrap.set(direction).normalize()
 				v.set(scrap)
-				scrap.set(scrap.y, -scrap.x).scaleSelf(Random.next(-spread, spread))
-				v.addSelf(scrap)
+				scrap.set(scrap.y, -scrap.x).scale(Random.next(-spread, spread))
+				v.add(scrap)
 				return v
 			}
 		})()
@@ -55,7 +55,7 @@ withNamespace('falldown.particle', function(particle){
 		function initParticle(p){
 			p.color = pickColor()
 			p.position.set(emitPos())
-			p.metadata.direction = emitDirection(new geom.Vector())
+			emitDirection(p.velocity)
 			p.metadata.timeAlive = 0
 			p.size = pickSize(0)
 			p.opacity = pickOpacity(0)
@@ -65,7 +65,7 @@ withNamespace('falldown.particle', function(particle){
 			var t = (p.metadata.timeAlive++) / particleLife
 			p.size = pickSize(t)
 			p.opacity = pickOpacity(t)
-			p.position.addSelf(p.metadata.direction)
+			p.position.add(p.velocity)
 		}
 		
 		function killParticle(p){

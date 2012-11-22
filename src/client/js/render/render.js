@@ -1,7 +1,5 @@
 withNamespace('falldown', function(falldown){
 
-	var scrapVec = new geom.Vector()
-
 	var Renderer = falldown.Renderer = function(layers){
 		this.layers = layers
 		this.plugins = []

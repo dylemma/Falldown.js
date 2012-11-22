@@ -1,24 +1,26 @@
 withNamespace('geom', function(geom){
 
-	var Vec2 = geom.Vector = function(x, y){
+	var Vector = geom.Vector = function(x, y){
 		this.x = x || 0
 		this.y = y || 0
 	}
 	
-	Vec2.prototype.length = function(){
+	Vector.scrap = new geom.Vector()
+	
+	Vector.prototype.length = function(){
 		return Math.sqrt(this.length2())
 	}
 	
-	Vec2.prototype.length2 = function(){
+	Vector.prototype.length2 = function(){
 		return this.x*this.x + this.y*this.y
 	}
 	
-	Vec2.prototype.normalize = function(){
-		return this.divideSelf(this.length())
+	Vector.prototype.normalize = function(){
+		return this.divide(this.length())
 	}
 	
-	Vec2.prototype.set = function(x,y){
-		if(x instanceof Vec2){
+	Vector.prototype.set = function(x,y){
+		if(x instanceof Vector){
 			this.x = x.x
 			this.y = x.y
 		} else {
@@ -28,8 +30,8 @@ withNamespace('geom', function(geom){
 		return this
 	}
 	
-	Vec2.prototype.addSelf = function(x,y){
-		if(x instanceof Vec2){
+	Vector.prototype.add = function(x,y){
+		if(x instanceof Vector){
 			this.x += x.x
 			this.y += x.y
 		} else {
@@ -39,8 +41,8 @@ withNamespace('geom', function(geom){
 		return this
 	}
 	
-	Vec2.prototype.subSelf = function(x,y){
-		if(x instanceof Vec2){
+	Vector.prototype.sub = function(x,y){
+		if(x instanceof Vector){
 			this.x -= x.x
 			this.y -= x.y
 		} else {
@@ -50,20 +52,20 @@ withNamespace('geom', function(geom){
 		return this
 	}
 	
-	Vec2.prototype.negateSelf = function(){
+	Vector.prototype.negate = function(){
 		this.x = -this.x
 		this.y = -this.y
 		return this
 	}
 	
-	Vec2.prototype.scaleSelf = function(s){
+	Vector.prototype.scale = function(s){
 		this.x *= s
 		this.y *= s
 		return this
 	}
 	
-	Vec2.prototype.divideSelf = function(s){
-		return this.scaleSelf(1/s)
+	Vector.prototype.divide = function(s){
+		return this.scale(1/s)
 	}
 	
 	var Rectangle = geom.Rectangle = function(x,y,width,height){

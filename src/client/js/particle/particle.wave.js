@@ -16,8 +16,8 @@ withNamespace('falldown.particle', function(particle){
 	 * along a "wave-front".
 	 */
 	function waveFrontPosition(startPos, endPos, width){
-		var scrap = new geom.Vector(),
-			dist = scrap.set(endPos).subSelf(startPos).length(),
+		var scrap = geom.Vector.scrap,
+			dist = scrap.set(endPos).sub(startPos).length(),
 			direction = new geom.Vector().set(scrap.normalize()),
 			normal = new geom.Vector(direction.y, -direction.x)
 		
@@ -29,8 +29,8 @@ withNamespace('falldown.particle', function(particle){
 				v = Random.next(width * -0.5, width * 0.5)
 			return (vec || new geom.Vector())
 				.set(startPos)
-				.addSelf(scrap.set(direction).scaleSelf(u))
-				.addSelf(scrap.set(normal).scaleSelf(v))
+				.add(scrap.set(direction).scale(u))
+				.add(scrap.set(normal).scale(v))
 		}
 	}
 

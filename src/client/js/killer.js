@@ -63,13 +63,13 @@ withNamespace('falldown', function(falldown){
 	}
 	
 	killer.playerHit = function(distThreshold){
-		var scrap = new geom.Vector()
-		var maxDist = distThreshold * distThreshold
+		var scrap = geom.Vector.scrap,
+			maxDist = distThreshold * distThreshold
 		return killer()
 			.decideWith(function(block){
 				var dist2 = scrap
 					.set(block.position)
-					.subSelf(system.world.player.position)
+					.sub(system.world.player.position)
 					.length2()
 				if(dist2 < maxDist) return 'hitPlayer'
 				return undefined

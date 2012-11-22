@@ -1,7 +1,5 @@
 withNamespace('falldown', function(falldown){
 
-	var scrap = new geom.Vector()
-
 	var System = falldown.System = function(world){
 		this.world = world
 		this.sysData = {
@@ -98,7 +96,7 @@ withNamespace('falldown', function(falldown){
 	
 	var stepBlocks = function(system, blocks, deadBlocks){
 		blocks.forEach(function(block, index){
-			block.position.addSelf(block.velocity)
+			block.position.add(block.velocity)
 			block.angle += block.rSpeed
 		})
 	}

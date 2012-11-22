@@ -2,6 +2,8 @@ withNamespace('falldown.particle', function(particle){
 
 	var Particle = function(){
 		this.position = new geom.Vector()
+		this.velocity = new geom.Vector()
+		this.acceleration = new geom.Vector()
 		this.color = 'red'
 		this.size = 1
 		this.opacity = 0.5
@@ -11,11 +13,18 @@ withNamespace('falldown.particle', function(particle){
 	
 	Particle.prototype.reset = function(){
 		this.position.set(0,0)
+		this.velocity.set(0,0)
+		this.acceleration.set(0,0)
 		this.color = 'red'
 		this.size = 1
 		this.opacity = 0.5
 		this.active = false
 		this.metadata = {}
+	}
+	
+	Particle.prototype.stepMovement = function(){
+		this.velocity.add(this.acceleration)
+		this.position.add(this.velocity)
 	}
 	
 	var psid = 0

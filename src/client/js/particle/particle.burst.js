@@ -27,12 +27,12 @@ withNamespace('falldown.particle', function(particle){
 	particle.burst = function(center, color, opts){
 		var particleLife = +opts.particleLife || 40,
 			velocity = opts.velocity || new geom.Vector(),
-			scrap = new geom.Vector()
+			scrap = geom.Vector.scrap
 	
 		function initParticle(p){
 			p.color = color
 			p.position.set(center)
-			p.metadata.direction = randomDirection(new geom.Vector())
+			randomDirection(p.velocity)
 			p.metadata.timeAlive = 0
 			p.metadata.dist = Math.random(0.25, 1)
 			p.size = size(0)
@@ -47,11 +47,11 @@ withNamespace('falldown.particle', function(particle){
 			//compute the position = center + direction*distance
 			p.position.set(center)
 			scrap
-				.set(p.metadata.direction)
-				.scaleSelf(distance(t) * p.metadata.dist)
-			p.position.addSelf(scrap)
-			scrap.set(velocity).scaleSelf(p.metadata.timeAlive)
-			p.position.addSelf(scrap)
+				.set(p.velocity)
+				.scale(distance(t) * p.metadata.dist)
+			p.position.add(scrap)
+			scrap.set(velocity).scale(p.metadata.timeAlive)
+			p.position.add(scrap)
 		}
 		
 		function killParticle(p){
