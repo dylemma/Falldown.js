@@ -139,7 +139,12 @@ withNamespace('falldown.particle', function(particle){
 			})
 			
 			if(age > behavior.duration && behavior.duration >=0){
+				behavior.expire()
+			}
+			
+			if(behavior.isExpired){
 				//behavior finished
+				iterateParticles(this, behavior, function(p){ p.reset() })
 				removeBehavior(this, bid)
 			}
 		}
@@ -160,6 +165,10 @@ withNamespace('falldown.particle', function(particle){
 		this.updateParticle = function updateParticle(p){}
 		this.killParticle = function killParticle(p){ return false }
 		this.spawnCount = function spawnCount(){ return 0 }
+		
+		var _expired = false
+		this.__defineGetter__('isExpired', function(){ return _expired })
+		this.expire = function(){ _expired = true }
 	}
 	
 	particle.Particle = Particle
