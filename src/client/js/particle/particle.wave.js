@@ -1,17 +1,5 @@
 withNamespace('falldown.particle', function(particle){
 
-	/* Return an "easing" function that starts at 0,
-	 * then goes up to 1 and then back down to 0, following
-	 * a cosine wave shape.
-	 */
-	function trigUpDown(amplitude){
-		var twoPi = 2 * Math.PI,
-			amp = (amplitude || 1) * -0.5
-		return function(t){
-			return amp * (Math.cos(twoPi*t) -1)
-		}
-	}
-
 	/* Create a function that will set the position (or create a new position)
 	 * along a "wave-front".
 	 */
@@ -40,7 +28,7 @@ withNamespace('falldown.particle', function(particle){
 		var pickPos = waveFrontPosition(startPos, endPos, width),
 			period = opts.period || 30,
 			amplitude = opts.amplitude || 3,
-			pickSize = trigUpDown(amplitude),
+			pickSize = falldown.ease('sin-in-out').to(amplitude).mirrored(),
 			pickColor = (function(){
 				if(typeof opts.color == 'function') return opts.color
 				else if(typeof opts.color == 'string') return function(){ return opts.color }

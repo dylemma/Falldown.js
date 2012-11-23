@@ -3,6 +3,7 @@ Array.fill = function(count, generator){
 	for(var i=0; i<count; i++){
 		a[i] = generator(i)
 	}
+	return a
 }
 
 function isDefined(a){

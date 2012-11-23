@@ -49,11 +49,13 @@ withNamespace('falldown.particle', function(particle){
 		var numBuckets = Math.ceil(numParticles / bucketSize)
 		numParticles = numBuckets * bucketSize
 		
-		var particles = new Array(numParticles)
-		for(var i=0; i<numParticles; i++) particles[i] = new Particle()
+		var particles = Array.fill(numParticles, function(){ return new Particle })
+		//new Array(numParticles)
+		//for(var i=0; i<numParticles; i++) particles[i] = new Particle()
 		
-		var freeBuckets = new Array(numBuckets)
-		for(var i=0; i<numBuckets; i++) freeBuckets[i] = i
+		var freeBuckets = Array.fill(numBuckets, function(i){ return i })
+		//new Array(numBuckets)
+		//for(var i=0; i<numBuckets; i++) freeBuckets[i] = i
 		
 		psys.particles = particles
 		psys.particleAllocation = { 'free': freeBuckets }

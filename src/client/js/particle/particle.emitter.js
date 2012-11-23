@@ -1,35 +1,7 @@
 withNamespace('falldown.particle', function(particle){
 
-	//linear easing from 0.5 to 1
-	var pickSize = (function(){
-		var e = d3.ease('linear')
-		return function(t){ return (1 + e(t)) * 0.5 }
-	})()
-	
-	//linear easing from 1 to 0
-	var pickOpacity = (function(){
-		var e = d3.ease('linear')
-		return function(t){ return 1 - e(t) }
-	})()
-
-	//creates a color picker function that will randomly shift the hue by 15 degrees
-	var colorPicker = function(initialColor){
-		var colorFunc = function(){ return initialColor || 'orange' }
-		var setColor = function(colorOrFunc){
-			if(typeof colorOrFunc === 'function') colorFunc = colorOrFunc
-			colorFunc = function(){ return colorOrFunc }
-		}
-		var picker = function(){
-			var color = d3.hsl(colorFunc())
-			var r = Random.nextInt(3) // = 0, 1, or 2
-			if(r == 2) color.h += 15
-			if(r == 1) color.h -= 15
-			return color.toString()
-		}
-		
-		picker.setColor = setColor
-		return picker
-	}
+	var pickSize = falldown.ease('linear').from(.5).to(1)
+	var pickOpacity = falldown.ease('linear').from(1).to(0)
 	
 	var particleEmitter = function(emitFrom, direction, particleLife){
 		var emitPos = (function(){
@@ -50,7 +22,7 @@ withNamespace('falldown.particle', function(particle){
 			}
 		})()
 		
-		var pickColor = colorPicker()
+		var pickColor = falldown.util.color.randomHueShift('orange')
 		
 		function initParticle(p){
 			p.color = pickColor()
@@ -81,7 +53,9 @@ withNamespace('falldown.particle', function(particle){
 		behavior.updateParticle = updateParticle
 		behavior.killParticle = killParticle
 		behavior.spawnCount = spawnCount
-		behavior.changeColor = pickColor.setColor
+		behavior.setColor = function(c){
+			pickColor = falldown.util.color.randomHueShift(c)
+		}
 		
 		return behavior
 	}

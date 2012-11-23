@@ -13,8 +13,17 @@
 		return ns
 	}
 	
+	function importNsTo(ns, to){
+		for(key in ns){ to[key] = ns[key] }
+		return to
+	}
+	
 	window.withNamespace = function(nsPath, callback){
 		return callback(namespacify(nsPath, this))
 	}
 
+	window.importNamespace = function(nsPath, target){
+		return importNsTo(namespacify(nsPath, this), target || {})
+	}
+	
 })()
