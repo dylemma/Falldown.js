@@ -17,6 +17,9 @@ var blockSystem = new BlockSystem(gameBounds)
 var player = new Player(gamePointer, gameBounds)
 var cursor = new Cursor(gamePointer, gameBounds)
 
+var ParticleEmitterSystem = require('./lib/particle/ParticleEmitterSystem')
+var playerEmitter = new ParticleEmitterSystem(player.position, new Vec(0, 0.6), 15 * Math.PI / 180, 60)
+
 var canvas = document.getElementById('game-canvas')
 var context = canvas.getContext('2d')
 
@@ -66,6 +69,9 @@ function gameLoop(){
 
 	blockSystem.update()
 	blockSystem.draw(context, invScale)
+
+	playerEmitter.update()
+	playerEmitter.draw(context)
 
 	player.draw(context, invScale)
 
