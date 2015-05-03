@@ -13,6 +13,7 @@ function Player(target, bounds){
 	this.bounds = bounds
 	this.position = target.clone()
 	this.rotation = 0
+	this.height = playerHeight
 
 	// circular buffer containing the last 3 'dx' values
 	this._recentDx = [0, 0, 0]
