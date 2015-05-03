@@ -17,8 +17,6 @@ function PlayerPropulsion(player){
 	// initialize the base color/hsl values
 	this.baseColor = undefined
 	this.baseHSL = {}
-	this.setBaseColor('orange')
-	this._colorRotation = 0
 
 	this.particlePool = new ObjectPool(function(){
 		return new Particle()
@@ -28,7 +26,12 @@ function PlayerPropulsion(player){
 }
 
 PlayerPropulsion.prototype.update = function(){
-	if(++this.spawnTimer > 0){
+	if(this.baseColor != this.player.color){
+		this.setBaseColor(this.player.color)
+	}
+
+	var spawnInterval = this.player.isShaky ? 4 : 0
+	if(++this.spawnTimer > spawnInterval){
 		this.spawnTimer = 0
 		this.spawnParticle()
 	}
@@ -37,6 +40,11 @@ PlayerPropulsion.prototype.update = function(){
 	while(p = itr.next()){
 		p.position.add(p.velocity)
 		if(++p.uptime > 60) itr.freeCurrent()
+		else {
+			// linear ease opacity from 0.5 to 0
+			// over the lifetime of 60 frames
+			p.opacity = 0.5 * (60 - p.uptime) / 60
+		}
 	}
 }
 
@@ -71,7 +79,6 @@ PlayerPropulsion.prototype.setBaseColor = function(cssColor){
 			c.l = Math.round(l * 100)
 		})
 	})
-	console.log('baseColor:', JSON.stringify(c))
 }
 
 PlayerPropulsion.prototype.pickColor = function(){
@@ -83,11 +90,8 @@ PlayerPropulsion.prototype.pickColor = function(){
 }
 
 PlayerPropulsion.prototype.updateSpawnInfo = function(){
-	// put the spawn point at the middle of the player's curved base
-	scratchVec.x = 0
-	scratchVec.y = this.player.height * 0.8
-	scratchVec.rotate(this.player.rotation)
-	this.spawnPoint.copy(this.player.position).add(scratchVec)
+	// put the spawn point at the player's tail
+	this.spawnPoint.copy(this.player.tailPosition)
 
 	// point the spawn direction the same way as the player
 	this.spawnDir.x = 0

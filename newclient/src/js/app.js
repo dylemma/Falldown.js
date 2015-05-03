@@ -14,7 +14,7 @@ var gameBounds = new Rectangle(0, 0, 100, 150)
 var gamePointer = new Vec(50, 120)
 var blockSystem = new BlockSystem(gameBounds)
 
-var player = new Player(gamePointer, gameBounds)
+var player = new Player(gamePointer, gameBounds, blockSystem)
 var cursor = new Cursor(gamePointer, gameBounds)
 
 var PlayerPropulsion = require('./lib/particle/PlayerPropulsion')
@@ -66,6 +66,7 @@ function gameLoop(){
 	cursor.draw(context)
 
 	player.followTarget()
+	player.collectBlocks()
 
 	blockSystem.update()
 	blockSystem.draw(context, invScale)
