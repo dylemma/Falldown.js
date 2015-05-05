@@ -1,9 +1,8 @@
 var Block = require('./Block')
+var Mathx = require('./Mathx')
 var Random = require('./Random')
 var ResourcePool = require('./ResourcePool')
 var ObjectPool = require('./ObjectPool')
-
-var degToRad = Math.PI / 180
 
 function BlockSystem(gameBounds){
 	this.gameBounds = gameBounds
@@ -24,7 +23,7 @@ BlockSystem.prototype.spawn = function(){
 	b.position.x = Random.inRange(this.gameBounds.minX, this.gameBounds.maxX)
 	b.color = Random.fromArray(this.pallatte)
 	b.velocity.y = Random.inRange(.3, 1)
-	b.rotationalVelocity = Random.inRange(.5 * degToRad, 2 * degToRad) * Random.negate()
+	b.rotationalVelocity = Mathx.degs2rads(Random.inRange(.5, 2)) * Random.negate()
 }
 
 BlockSystem.prototype.update = function(){

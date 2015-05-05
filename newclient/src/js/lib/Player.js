@@ -1,5 +1,6 @@
 var Vec = require('victor')
 var Random = require('./Random')
+var Mathx = require('./Mathx')
 
 var playerScale = 1.4
 var playerHalfWidth = playerScale * 1
@@ -56,7 +57,7 @@ Player.prototype.followTarget = function(){
 	// pick an angle based on the recent movement
 	var angle = (Math.abs(recentMovement) > 0.1) ? recentMovement * 2 : 0
 	angle = Math.max(-45, Math.min(45, angle))
-	this.rotation = angle * Math.PI / 180
+	this.rotation = Mathx.degs2rads(angle)
 
 	// update the tail pos based on the angle
 	scratchVec.copy(tipToTailVec).rotate(this.rotation)
@@ -99,7 +100,7 @@ Player.prototype.draw = function(context, invScale){
 	if(this._shakeCounter){
 		scratchVec.x = 0.5
 		scratchVec.y = 0
-		scratchVec.rotate(Math.random() * 2 * Math.PI)
+		scratchVec.rotate(Math.random() * Mathx.TAU)
 		context.translate(scratchVec.x, scratchVec.y)
 	}
 

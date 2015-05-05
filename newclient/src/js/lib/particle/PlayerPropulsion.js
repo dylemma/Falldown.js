@@ -3,9 +3,10 @@ var Random = require('../Random')
 var Color = require('../Color')
 var ObjectPool = require('../ObjectPool')
 var Vec = require('victor')
+var Mathx = require('../Mathx')
 
 var scratchVec = new Vec(0,0)
-var spreadRadians = 10 * Math.PI / 180
+var spreadRadians = Mathx.degs2rads(10)
 
 function PlayerPropulsion(player){
 	this.player = player

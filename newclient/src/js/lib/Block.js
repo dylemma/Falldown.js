@@ -1,5 +1,5 @@
 var Vec = require('victor')
-var twoPi = Math.PI * 2
+var Mathx = require('./Mathx')
 
 function Block(){
 	this.position = new Vec(0, 0)
@@ -13,8 +13,8 @@ function Block(){
 Block.prototype.update = function(){
 	this.position.add(this.velocity)
 	this.rotation += this.rotationalVelocity
-	if(this.rotation > twoPi) this.rotation -= twoPi
-	if(this.rotation < -twoPi) this.rotation += twoPi
+	if(this.rotation > Mathx.TAU) this.rotation -= Mathx.TAU
+	if(this.rotation < -0) this.rotation += Mathx.TAU
 }
 
 Block.prototype.draw = function(context, invScale){

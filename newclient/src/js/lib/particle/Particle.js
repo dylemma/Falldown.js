@@ -1,4 +1,5 @@
 var Vec = require('victor')
+var Mathx = require('../Mathx')
 var particleId = 0
 
 function Particle(){
@@ -30,7 +31,7 @@ Particle.defaultRenderer = function(context, particle){
 	context.fillStyle = particle.color
 
 	context.beginPath()
-	context.arc(0, 0, particle.scale, 0, Math.PI * 2)
+	context.arc(0, 0, particle.scale, 0, Mathx.TAU)
 	context.fill()
 
 	context.restore()
