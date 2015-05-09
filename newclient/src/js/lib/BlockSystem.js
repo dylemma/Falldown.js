@@ -1,23 +1,22 @@
 var Block = require('./Block')
 var Mathx = require('./Mathx')
 var Random = require('./Random')
-var ResourcePool = require('./ResourcePool')
 var ObjectPool = require('./ObjectPool')
+var GameSettings = require('./GameSettings')
+var SpawnTicker = require('./SpawnTicker')
 
 function BlockSystem(gameBounds){
 	this.gameBounds = gameBounds
-	this.pallatte = ['limegreen', 'deepskyblue', 'sandybrown', 'darkorchid', 'crimson']
-	this.spawnInterval = 30
+	this.pallatte = GameSettings.colorPallatte
 	this.oobThreshold = 5
 
-	this._spawnTicker = 0
-
+	this.blockTicker = new SpawnTicker(30)
 	this.blocksPool = new ObjectPool(function(){
 		return new Block()
 	}, 30)
 }
 
-BlockSystem.prototype.spawn = function(){
+BlockSystem.prototype.spawnBlock = function(){
 	var b = this.blocksPool.take()
 	b.position.y = -this.oobThreshold + 1
 	b.position.x = Random.inRange(this.gameBounds.minX, this.gameBounds.maxX)
@@ -27,11 +26,10 @@ BlockSystem.prototype.spawn = function(){
 }
 
 BlockSystem.prototype.update = function(){
-	if(++this._spawnTicker >= this.spawnInterval){
-		this._spawnTicker = 0
-		this.spawn()
-	}
+	// occasionally spawn blocks
+	this.blockTicker.tick() && this.spawnBlock()
 
+	// move the blocks downward
 	var maxY = this.gameBounds.maxY + this.oobThreshold
 	var itr = this.blocksPool.iterator()
 	var block = null

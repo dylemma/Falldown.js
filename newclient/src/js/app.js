@@ -3,6 +3,7 @@ var letterbox = require('./lib/letterbox')
 var Rectangle = require('./lib/Rectangle')
 var Block = require('./lib/Block')
 var BlockSystem = require('./lib/BlockSystem')
+var PowerupSystem = require('./lib/PowerupSystem')
 var ResourcePool = window.ResourcePool = require('./lib/ResourcePool')
 var Player = require('./lib/Player')
 var Cursor = require('./lib/Cursor')
@@ -16,6 +17,8 @@ var blockSystem = new BlockSystem(gameBounds)
 
 var player = new Player(gamePointer, gameBounds, blockSystem)
 var cursor = new Cursor(gamePointer, gameBounds)
+
+var powerupSystem = new PowerupSystem(gameBounds, player)
 
 var PlayerPropulsion = require('./lib/particle/PlayerPropulsion')
 var playerPropulsion = new PlayerPropulsion(player)
@@ -70,6 +73,9 @@ function gameLoop(){
 
 	blockSystem.update()
 	blockSystem.draw(context, invScale)
+
+	powerupSystem.update()
+	powerupSystem.draw(context, invScale)
 
 	playerPropulsion.update()
 	playerPropulsion.draw(context)

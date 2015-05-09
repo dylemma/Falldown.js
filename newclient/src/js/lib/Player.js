@@ -70,7 +70,7 @@ Player.prototype.collectBlocks = function(){
 	var itr = this.blockSystem.blocksPool.iterator()
 	var block = null
 	while(block = itr.next()){
-		if(this.hitTest(block)){
+		if(this.hitTestCircular(block)){
 			itr.freeCurrent()
 			if(block.color != this.color){
 				this._shakeCounter = 30
@@ -79,18 +79,18 @@ Player.prototype.collectBlocks = function(){
 	}
 }
 
-Player.prototype.hitTest = function(block){
-	var blockX = block.position.x
-	var blockY = block.position.y
+Player.prototype.hitTestCircular = function(circle){
+	var circleX = circle.position.x
+	var circleY = circle.position.y
 
 	// rectangular model
-	var xThreshold = playerHalfWidth + block.radius
-	var xDist = Math.abs(this.position.x - blockX)
+	var xThreshold = playerHalfWidth + circle.radius
+	var xDist = Math.abs(this.position.x - circleX)
 	if(xDist > xThreshold) return false
 
-	var yMin = this.position.y - block.radius
+	var yMin = this.position.y - circle.radius
 	var yMax = this.position.y + playerHeight
-	return (blockY >= yMin) && (blockY <= yMax)
+	return (circleY >= yMin) && (circleY <= yMax)
 }
 
 Player.prototype.draw = function(context, invScale){
