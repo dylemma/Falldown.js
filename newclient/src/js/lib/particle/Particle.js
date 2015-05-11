@@ -23,7 +23,7 @@ Particle.prototype.reset = function(){
 	this.uptime = 0
 }
 
-Particle.defaultRenderer = function(context, particle){
+Particle.defaultRenderer = function(context, particle, invScale){
 	context.save()
 	context.translate(particle.position.x, particle.position.y)
 	context.rotate(particle.rotation)
@@ -35,6 +35,25 @@ Particle.defaultRenderer = function(context, particle){
 	context.fill()
 
 	context.restore()
+}
+
+Particle.lineRenderer = function(lineWidth){
+	return function(context, particle, invScale){
+		context.save()
+		context.translate(particle.position.x, particle.position.y)
+		context.rotate(particle.rotation)
+		context.globalAlpha = particle.opacity
+		context.strokeStyle = particle.color
+		context.lineWidth = invScale * lineWidth
+
+		context.beginPath()
+		// context.arc(0, 0, particle.scale, 0, Mathx.TAU)
+		context.moveTo(0, 0)
+		context.lineTo(2, 0)
+		context.stroke()
+
+		context.restore()
+	}
 }
 
 module.exports = Particle

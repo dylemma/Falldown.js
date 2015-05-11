@@ -78,7 +78,7 @@ function gameLoop(){
 	powerupSystem.draw(context, invScale)
 
 	playerPropulsion.update()
-	playerPropulsion.draw(context)
+	playerPropulsion.draw(context, invScale)
 
 	player.draw(context, invScale)
 

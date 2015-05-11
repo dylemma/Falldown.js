@@ -5,9 +5,11 @@ var Random = require('./Random')
 var ObjectPool = require('./ObjectPool')
 var GameSettings = require('./GameSettings')
 var SpawnTicker = require('./SpawnTicker')
+var PowerupParticles = require('./particle/PowerupParticles')
 
 var oobThreshold = 5
 var spawnInterval = 300
+var nextPowerupId = 0
 
 function PowerupSystem(gameBounds, player){
 	this.gameBounds = gameBounds
@@ -22,8 +24,7 @@ function PowerupSystem(gameBounds, player){
 	this.powerupPool = new ObjectPool(function(){ return new Powerup() }, 3)
 	this.powerupTicker = new SpawnTicker(100)
 
-	this.particlePool = new ObjectPool(function(){ return new Particle() }, 100)
-	this.particleTicker = new SpawnTicker(1)
+	this.particles = new PowerupParticles(this)
 }
 
 PowerupSystem.prototype.spawn = function(){
@@ -33,6 +34,9 @@ PowerupSystem.prototype.spawn = function(){
 	p.color = this.pickColor()
 	p.velocity.y = .5
 	p.rotationalVelocity = Mathx.degs2rads(Random.inRange(.5, 2) * Random.negate())
+
+	// id for associating powerup particles to this powerup
+	p._powerupId = nextPowerupId++
 }
 
 PowerupSystem.prototype.pickColor = function(){
@@ -55,6 +59,7 @@ PowerupSystem.prototype.update = function(){
 	if(this.powerupTicker.tick()){
 		this.spawn()
 	}
+	this.particles.update()
 
 	var p = null
 	var itr = this.powerupPool.iterator()
@@ -65,8 +70,8 @@ PowerupSystem.prototype.update = function(){
 			itr.freeCurrent()
 		} else {
 			if(this.player.hitTestCircular(p)){
-				console.log('player collect', p.color)
 				this.player.color = p.color
+				this.particles.setCollected(p._powerupId, this.player.position)
 				itr.freeCurrent()
 			}
 		}
@@ -74,6 +79,8 @@ PowerupSystem.prototype.update = function(){
 }
 
 PowerupSystem.prototype.draw = function(context, invScale){
+	this.particles.draw(context, invScale)
+
 	var p = null
 	var itr = this.powerupPool.iterator()
 	while(p = itr.next()){
