@@ -8,7 +8,6 @@ var SpawnTicker = require('./SpawnTicker')
 var PowerupParticles = require('./particle/PowerupParticles')
 
 var oobThreshold = 5
-var spawnInterval = 300
 var nextPowerupId = 0
 
 function PowerupSystem(gameBounds, player){
@@ -22,7 +21,7 @@ function PowerupSystem(gameBounds, player){
 	})
 
 	this.powerupPool = new ObjectPool(function(){ return new Powerup() }, 3)
-	this.powerupTicker = new SpawnTicker(100)
+	this.powerupTicker = new SpawnTicker(300)
 
 	this.particles = new PowerupParticles(this)
 }

@@ -12,7 +12,17 @@ var renderParticle = Particle.defaultRenderer //Particle.lineRenderer(6)
 
 function PowerupParticles(powerupSystem){
 	this.powerupSystem = powerupSystem
-	this.particlePool = new ObjectPool(function(){ return new Particle() }, 60)
+	this.particlePool = new ObjectPool(function(){
+		var p = new Particle()
+		// control points for a cubic bezier curve upon collection
+		p._collected = false
+		p._collectionTick = 0
+		p._collectionStartPos = new Vec(0, 0)
+		p._collectionControl1 = new Vec(0, 0)
+		p._collectionControl2 = new Vec(0, 0)
+		p._collectionTarget = null
+		return p
+	}, 241)
 	this.spawnTicker = new SpawnTicker(1)
 }
 
@@ -32,17 +42,16 @@ PowerupParticles.prototype.spawn = function(powerup){
 	p.velocity.x = .4
 	p.velocity.y = 0
 	p.velocity.rotate(angle)
-	p.velocity.y += 0.4
-	p.rotation = angle
+	p.velocity.y += 0.25
 	p.color = pickColor(powerup)
-	p.opacity = 0.1
-	p.scale = 2
+	p.opacity = 0.15
+	p.scale = 1.5
 
-	// store some info that helps determine
-	// how to behave when the powerup gets collected
 	p._powerupId = powerup._powerupId
-	p._followingTarget = null // eventually a Vec
-	p._followingTargetTimer = 0
+
+	p._collected = false
+	p._collectionTick = 0
+	p._collectionTarget = null
 
 }
 
@@ -71,71 +80,83 @@ PowerupParticles.prototype.setCollected = function(powerupId, collectorPos){
 	var itr = this.particlePool.iterator()
 	while(p = itr.next()){
 		if(p._powerupId == powerupId){
-			p._followingTarget = collectorPos
-			p._followingTargetTimer = 0
-			p._startFollowingTime = Math.floor(Random.inRange(10, 20))
+			setParticleCollected(p, collectorPos)
 		}
+	}
+}
+
+function setParticleCollected(particle, target){
+	particle._collected = true
+	particle._collectionTick = 0
+	particle._collectionDuration = Random.inRange(40, 60)
+	particle._collectionTarget = target
+	particle._collectionStartPos.copy(particle.position)
+
+	// determine if the velocity is pointing away or towards the target
+	scratchVec.copy(target).subtract(particle.position)
+	var dot = scratchVec.dot(particle.velocity)
+	var cross = scratchVec.cross(particle.velocity)
+
+	// scratchVec = velocity * 30
+	scratchVec.copy(particle.velocity)
+	scratchVec.x *= 30
+	scratchVec.y *= 30
+
+	if(dot < 0){
+		// facing away: add a slight perpendicular offset on control point 2
+		particle._collectionControl1.copy(particle.position).add(scratchVec)
+		scratchVec.rotateByDeg(cross < 0 ? -90 : 90)
+		scratchVec.x *= 2
+		scratchVec.y *= 2
+		particle._collectionControl2.copy(particle._collectionControl1).add(scratchVec)
+	} else {
+		// facing target: both control points are the same
+		particle._collectionControl1.copy(particle.position).add(scratchVec)
+		particle._collectionControl2.copy(particle._collectionControl1)
 	}
 }
 
 PowerupParticles.prototype.update = function(){
 	var itr = null
 
+	// spawn 4 particles every tick
 	if(this.spawnTicker.tick()){
 		var powerup = null
 		itr = this.powerupSystem.powerupPool.iterator()
 		while(powerup = itr.next()){
-			this.spawn(powerup); this.spawn(powerup); this.spawn(powerup); this.spawn(powerup)
+			for(var i=0; i<4; ++i) this.spawn(powerup)
 		}
 	}
 
 	var p = null
 	itr = this.particlePool.iterator()
+	var first = true
 	while(p = itr.next()){
-		if(p._followingTarget){
-			// move the particle towards its target
-
-
-			// scale scratchVec by an amount that increases as the timer goes up
-			// var vAngle = p.velocity.horizontalAngle()
-			// var tAngle = scratchVec.horizontalAngle()
-
-			// var angle1 = tAngle - vAngle
-			// var angle2 = tAngle + Mathx.TAU - vAngle
-			// var angle = Math.abs(angle1) < Math.PI ? angle1 : angle2
-			// var turnAmt = Mathx.degs2rads(1)
-			// var turnAngle = Math.abs(angle) < turnAmt ? angle : angle < 0 ? -turnAmt : turnAmt
-
-			var t = ++p._followingTargetTimer
-			if(t > p._startFollowingTime){
-				var dt = t - p._startFollowingTime
-
-				// scratchVec = particle to target
-				scratchVec.copy(p._followingTarget).subtract(p.position)
-				var s = dt / 20
-				var sInv = 1 / s
-				
-				scratchVec.x *= s
-				scratchVec.y *= s
-				p.position.add(scratchVec)
-
-				p.velocity.x *= .8
-				p.velocity.y *= .8
-				p.opacity *= .9
-
-				if(dt > 20) itr.freeCurrent()
-			}
-			// var d = p.position.distance(p._followingTarget)
-			p.position.add(p.velocity)
-
-			if(p.position.distance(p._followingTarget) < 1.5){
+		if(p._collected){
+			// follow a cubic bezier curve to the 'target',
+			// using control points that were set up when
+			// the particle was collected
+			var t = ++p._collectionTick / p._collectionDuration
+			if(t > 1){
 				itr.freeCurrent()
+			} else {
+				Mathx.cubicBezier(
+					p._collectionStartPos,
+					p._collectionControl1,
+					p._collectionControl2,
+					p._collectionTarget,
+					t,
+					p.position)
+				if(first){
+					first = false
+				}
 			}
-			
+
 		} else {
 			// move the particle along its velocity
 			p.position.add(p.velocity)
 			if(++p.uptime > 60) itr.freeCurrent()
+			p.opacity = 0.15 * Math.cos(Math.PI * p.uptime / 120)
 		}
 	}
 }
