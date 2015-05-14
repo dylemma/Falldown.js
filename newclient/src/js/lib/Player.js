@@ -139,7 +139,9 @@ Player.prototype.collectBlocks = function(){
 				this._shakeCounter = 30
 				this._wrongBlockDegenTimer = wrongBlockDegenLength
 			} else {
-				this._rightBlockRegenTimer = rightBlockRegenLength
+				// note the use of += instead of =
+				// so that quick successive collections don't overlap
+				this._rightBlockRegenTimer += rightBlockRegenLength
 			}
 		}
 	}
