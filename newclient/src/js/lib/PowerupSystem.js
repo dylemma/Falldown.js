@@ -69,7 +69,7 @@ PowerupSystem.prototype.update = function(){
 			itr.freeCurrent()
 		} else {
 			if(this.player.hitTestCircular(p)){
-				this.player.color = p.color
+				this.player.onCollectPowerup(p)
 				this.particles.setCollected(p._powerupId, this.player.position)
 				itr.freeCurrent()
 			}

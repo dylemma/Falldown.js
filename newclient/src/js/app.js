@@ -7,16 +7,18 @@ var PowerupSystem = require('./lib/PowerupSystem')
 var ResourcePool = window.ResourcePool = require('./lib/ResourcePool')
 var Player = require('./lib/Player')
 var Cursor = require('./lib/Cursor')
+var Life = require('./lib/Life')
 
 var screenBounds = new Rectangle(0, 0, window.innerWidth, window.innerHeight)
 var canvasBounds = letterbox(screenBounds, 2/3)
 
 var gameBounds = new Rectangle(0, 0, 100, 150)
-var gamePointer = new Vec(50, 120)
+var gamePointer = new Vec(50, 110)
 var blockSystem = new BlockSystem(gameBounds)
 
 var player = new Player(gamePointer, gameBounds, blockSystem)
 var cursor = new Cursor(gamePointer, gameBounds)
+var life = new Life(player, gameBounds)
 
 var powerupSystem = new PowerupSystem(gameBounds, player)
 
@@ -68,8 +70,7 @@ function gameLoop(){
 
 	cursor.draw(context)
 
-	player.followTarget()
-	player.collectBlocks()
+	player.update()
 
 	blockSystem.update()
 	blockSystem.draw(context, invScale)
@@ -81,6 +82,12 @@ function gameLoop(){
 	playerPropulsion.draw(context, invScale)
 
 	player.draw(context, invScale)
+
+	if(player.isDead){
+		// for testing's sake, just revive the player
+		player.life = player.maxLife
+	}
+	life.draw(context, invScale)
 
 	context.restore()
 
