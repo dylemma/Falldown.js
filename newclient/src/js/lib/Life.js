@@ -8,8 +8,6 @@ function Life(player, gameBounds){
 	this.gameBounds = gameBounds
 }
 
-
-
 Life.prototype.draw = function(context, invScale){
 
 	var player = this.player
@@ -19,7 +17,7 @@ Life.prototype.draw = function(context, invScale){
 	context.fillStyle = '#fff'
 	context.fillRect(
 		gb.minX,
-		gb.maxY - 4,
+		gb.minY,
 		gb.width,
 		4)
 
@@ -35,7 +33,7 @@ Life.prototype.draw = function(context, invScale){
 	context.fillStyle = player.color
 	context.fillRect(
 		gb.minX + 1,
-		gb.maxY - 3,
+		gb.minY + 1,
 		(gb.width - 2) * lifeRatio,
 		2)
 
@@ -46,7 +44,7 @@ Life.prototype.draw = function(context, invScale){
 	context.lineWidth = invScale
 	context.strokeRect(
 		gb.minX + 1,
-		gb.maxY - 3,
+		gb.minY + 1,
 		gb.width - 2,
 		2)
 }
