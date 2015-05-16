@@ -3,13 +3,12 @@ function Cursor(targetVec, bounds){
 	this.bounds = bounds
 }
 
-Cursor.prototype.draw = function(context){
+Cursor.prototype.draw = function(context, invScale){
 	var bounds = this.bounds
 	var x = this.targetVec.x
 	var y = this.targetVec.y
 
 	context.save()
-	// context.resetTransform()
 
 	context.beginPath()
 
@@ -21,9 +20,9 @@ Cursor.prototype.draw = function(context){
 	context.moveTo(x, bounds.minY)
 	context.lineTo(x, bounds.maxY)
 
-	context.globalAlpha = 0.2
-	context.lineStyle = '#ccc'
-	context.lineWidth = 0.5
+	context.globalAlpha = 0.4
+	context.strokeStyle = '#ccc'
+	context.lineWidth = invScale * 2
 	context.stroke()
 
 	context.restore()

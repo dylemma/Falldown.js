@@ -6,4 +6,5 @@ body {
 #game-canvas {
 	position: absolute;
 	cursor: none;
+	background-color: #fff;
 }
