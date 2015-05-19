@@ -3,12 +3,43 @@
 <head>
 	<title>Test Page Wooooo!</title>
 	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+	<link href='http://fonts.googleapis.com/css?family=Alegreya:900italic,900' rel='stylesheet' type='text/css'>
 	<!-- build:css:dist app.min.css -->
 	<link rel="stylesheet" href="app.css"/>
 	<!-- /build -->
 </head>
 <body>
 	<canvas id="game-canvas"></canvas>
+
+	<div id="menu-container">
+		<div id="gameLogo">
+			Falldown
+		</div>
+
+		<div id="menu">
+			<div class="menuSlide" id="slideMainMenu">
+				<div class="menuItem" id="menuClose">Close Menu</div>
+				<!-- <div class="menuItem" id="menuStart">Start</div> -->
+				<!-- <div class="menuItem" id="menuContinue">Continue</div> -->
+				<div class="menuItem" id="menuInstructions" slide-href="#slideInstructions">How To Play</div>
+				<div class="menuItem" id="menuSettings" slide-href="#slideSettings">Settings</div>
+			</div>
+
+			<div class="menuSlide gone" id="slideInstructions">
+				This is a placeholder for the instructions!
+
+				<div class="menuItem" slide-href="#slideMainMenu">Back</div>
+			</div>
+
+			<div class="menuSlide gone" id="slideSettings">
+				This is a placeholder for the settings!
+
+				<div class="menuItem" slide-href="#slideMainMenu">Back</div>
+			</div>
+		</div>
+
+	</div>
+
 	<!-- build:js:dist app.bundle.js -->
 	<script type="text/javascript" src="vendor.js"></script>
 	<script type="text/javascript" src="app.js"></script>

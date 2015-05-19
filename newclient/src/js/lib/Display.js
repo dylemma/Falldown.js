@@ -4,6 +4,8 @@ var Rectangle = require('./Rectangle')
 var canvas = document.getElementById('game-canvas')
 var context = canvas.getContext('2d')
 
+var menuDiv = document.getElementById('menu-container')
+
 // aspectRatio = height / width
 var aspectRatio = 2 / 3
 
@@ -20,6 +22,16 @@ function updateCanvasPos(){
 	canvas.style.top = Math.floor(canvasBounds.y) + 'px'
 	canvas.setAttribute('width', canvasBounds.width)
 	canvas.setAttribute('height', canvasBounds.height)
+
+	menuDiv.style.left = Math.floor(canvasBounds.x) + 'px'
+	menuDiv.style.top = Math.floor(canvasBounds.y) + 'px'
+	menuDiv.style.width = Math.floor(canvasBounds.width) + 'px'
+	menuDiv.style.height = Math.floor(canvasBounds.height) + 'px'
+
+	// fonts inside the container are 'em'-based, so we set the
+	// base font-size in pixels so that they scale relatively
+	// to the height of the full area
+	menuDiv.style.fontSize = (canvasBounds.height / 50) + 'px'
 }
 updateCanvasPos()
 window.addEventListener('resize', updateCanvasPos)

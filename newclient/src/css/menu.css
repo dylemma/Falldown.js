@@ -1,0 +1,50 @@
+#menu-container {
+	position: absolute;
+	overflow: hidden;
+}
+
+#gameLogo {
+	position: absolute;
+	top: 10%;
+	width: 100%;
+
+	font-family: 'Alegreya', serif;
+	font-size: 5em;
+	font-weight: 900;
+	font-style: italic;
+	text-align: center;
+
+	color: #fff;
+	text-shadow:
+		2px 2px 15px #000,
+		-2px -2px 15px #000,
+		2px -2px 15px #000,
+		-2px 2px 15px #000;
+}
+
+#menu {
+	position: absolute;
+	width: 100%;
+	top: 26%;
+	text-align: center;
+}
+
+#gameLogo.entering, #menu.entering {
+	/* speeds in, goes a bit too far, and settles in */
+	transition: top .4s cubic-bezier(.25, 1.2, 0.7, 1.1);
+}
+
+#gameLogo.leaving, #menu.leaving {
+	/* transitions backwards briefly before speeding away */
+	transition: top .5s cubic-bezier(0.8, -0.2, 0.9, .5);
+}
+#gameLogo.leaving { top: -20%; }
+#menu.leaving { top: 100%; }
+
+
+.menuItem {
+	font-family: 'Alegreya', serif;
+	font-size: 2em;
+	font-weight: 900;
+	cursor: pointer;
+}

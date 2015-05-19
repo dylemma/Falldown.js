@@ -9,14 +9,14 @@ module.exports = function(grunt){
 				src: [],
 				dest: 'build/vendor.js',
 				options: {
-					require: ['victor']
+					require: ['victor', 'async']
 				}
 			},
 			client: {
 				src: ['src/js/**/*.js'],
 				dest: 'build/app.js',
 				options: {
-					external: ['victor']
+					external: ['victor', 'async']
 				}
 			}
 		},
