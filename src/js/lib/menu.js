@@ -1,7 +1,9 @@
 var async = require('async')
+var EventEmitter = require('events').EventEmitter
 
 var gameLogo = document.getElementById('gameLogo')
 var menu = document.getElementById('menu')
+var menuEvents = exports.events = new EventEmitter()
 
 var transitionEvent = (function(){
 	var el = document.createElement('dummy')
@@ -29,11 +31,14 @@ function awaitTransitionEnd(el, callback){
 }
 
 // Menu State enum
-var TRANSITIONING = 0
-var OPEN = 1
-var CLOSED = 2
+var TRANSITIONING = exports.TRANSITIONING = 0
+var OPEN = exports.OPEN = 1
+var CLOSED = exports.CLOSED = 2
 
 var menuState = OPEN
+Object.defineProperty(exports, 'state', {
+	'get': function(){ return menuState }
+})
 
 function openMenu(callback){
 	callback = callback || function(){}
@@ -44,6 +49,7 @@ function openMenu(callback){
 	}
 
 	menuState = TRANSITIONING
+	menuEvents.emit('preopen')
 
 	async.series([
 		function(cb){
@@ -55,6 +61,7 @@ function openMenu(callback){
 		function(cb){
 			menuState = OPEN
 			cb(null, true)
+			menuEvents.emit('open')
 		}
 	], callback)
 
@@ -63,6 +70,7 @@ function openMenu(callback){
 	menu.classList.remove('leaving')
 	menu.classList.add('entering')
 }
+exports.open = openMenu
 
 function closeMenu(callback){
 	callback = callback || function(){}
@@ -73,6 +81,7 @@ function closeMenu(callback){
 	}
 
 	menuState = TRANSITIONING
+	menuEvents.emit('preclose')
 
 	async.series([
 		function(cb){
@@ -84,6 +93,7 @@ function closeMenu(callback){
 		function(cb){
 			menuState = CLOSED
 			cb(null, true)
+			menuEvents.emit('close')
 		}
 	], callback)
 
@@ -92,6 +102,7 @@ function closeMenu(callback){
 	menu.classList.remove('entering')
 	menu.classList.add('leaving')
 }
+exports.close = closeMenu
 
 // obtain a list of slides in the menu
 var menuSlides = menu.getElementsByClassName('menuSlide')
@@ -119,6 +130,7 @@ function gotoSlide(slide, callback){
 	else {
 		var outSlide = activeSlide
 		activeSlide = slide
+		menuEvents.emit('preswitch', slide)
 		async.parallel([
 			// transition the 'out' slide away
 			function(cb){
@@ -141,6 +153,7 @@ function gotoSlide(slide, callback){
 					function(innerCb){
 						slide.classList.remove('entering')
 						innerCb(null, true)
+						menuEvents.emit('switch', slide)
 					}
 				], cb)
 				slide.classList.add('entering')
@@ -150,27 +163,16 @@ function gotoSlide(slide, callback){
 	}
 }
 
-// Auto-wire any '.menuItem[slide-href]'
 ;(function(){
 	var navItems = Array.prototype.slice.call(
-		menu.querySelectorAll('.menuItem[slide-href]')
+		menu.querySelectorAll('.menuItem')
 	)
 	navItems.forEach(function(item){
 		var href = item.getAttribute('slide-href')
 		var target = menu.querySelector(href)
-		if(target) item.addEventListener('click', function(){
-			gotoSlide(target)
+		item.addEventListener('click', function(e){
+			menuEvents.emit('select', item, e)
+			if(target) gotoSlide(target)
 		})
 	})
 })()
-
-// Wire the 'menuClose' button
-var menuClose = document.getElementById('menuClose')
-menuClose && menuClose.addEventListener('click', function(){
-	closeMenu()
-})
-
-// Open the menu by pressing Space
-window.addEventListener('keydown', function(e){
-	if(menuState == CLOSED && e.keyCode == 32) openMenu()
-})

@@ -9,7 +9,7 @@ module.exports = function(grunt){
 				src: [],
 				dest: 'build/vendor.js',
 				options: {
-					require: ['victor', 'async']
+					require: ['victor', 'async', 'events']
 				}
 			},
 			client: {

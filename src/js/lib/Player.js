@@ -6,6 +6,8 @@ var playerScale = 1.4
 var playerHalfWidth = playerScale * 1
 var playerHeight = playerScale * 10 / 3
 
+var defaultPlayerY = 110
+
 var tipToTailVec = new Vec(0, playerHeight * 0.8)
 var scratchVec = new Vec(0, 0)
 
@@ -30,6 +32,24 @@ var passiveLifeDegen = function(timeSincePowerup){
 }
 
 /*
+Information to transition the Y position
+*/
+var introTransitionDuration = 180
+//var introTransitionCurve = [new Vec(0, 0), new Vec(0, 1), new Vec(.5, 1), new Vec(1, 1)]
+var introTransitionCurve = [new Vec(0, 0), new Vec(0.25, 1), new Vec(0.25, 1), new Vec(1, 1)]
+function introTransitionProgress(t){
+	Mathx.cubicBezier(
+		introTransitionCurve[0],
+		introTransitionCurve[1],
+		introTransitionCurve[2],
+		introTransitionCurve[3],
+		t,
+		scratchVec
+	)
+	return scratchVec.y
+}
+
+/*
 @param target {Vec}
 @param bounds {Rectangle}
 @param blockSystem {BlockSystem}
@@ -50,6 +70,8 @@ function Player(target, bounds, blockSystem){
 	// circular buffer containing the last 3 'dx' values
 	this._recentDx = [0, 0, 0]
 	this._recentDxIndex = 0
+
+	this._introTransitionTimer = 0
 
 	this._shakeCounter = 0
 	this._wrongBlockDegenTimer = 0
@@ -73,6 +95,8 @@ Object.defineProperty(Player.prototype, 'isShaky', {
 })
 
 Player.prototype.update = function(){
+	this.runIntroTransition()
+
 	this.followTarget()
 
 	this.collectBlocks()
@@ -144,6 +168,22 @@ Player.prototype.collectBlocks = function(){
 				this._rightBlockRegenTimer += rightBlockRegenLength
 			}
 		}
+	}
+}
+
+Player.prototype.startIntroTransition = function(){
+	this._introTransitionTimer = introTransitionDuration
+}
+
+Player.prototype.runIntroTransition = function(){
+	if(this._introTransitionTimer){
+		var t = (introTransitionDuration - (--this._introTransitionTimer)) / introTransitionDuration
+		var start = this.bounds.maxY + 5
+		var end = defaultPlayerY
+		var ratio = introTransitionProgress(t)
+		this.position.y = start + (end - start) * ratio
+	} else {
+		this.position.y = defaultPlayerY
 	}
 }
 

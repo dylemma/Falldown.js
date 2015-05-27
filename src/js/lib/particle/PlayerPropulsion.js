@@ -34,7 +34,7 @@ PlayerPropulsion.prototype.update = function(){
 	var spawnInterval = this.player.isShaky ? 4 : 0
 	if(++this.spawnTimer > spawnInterval){
 		this.spawnTimer = 0
-		this.spawnParticle()
+		if(!this.player.isDead) this.spawnParticle()
 	}
 	var itr = this.particlePool.iterator()
 	var p = null
